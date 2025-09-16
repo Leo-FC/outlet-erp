@@ -1,0 +1,92 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Editar Fornecedor</title>
+    
+    <style>
+        body {
+            background-color: #2c2c2c;
+            color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+            color: #f0f0f0;
+            font-size: 36px;
+            margin-bottom: 40px;
+        }
+        .painel-botoes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .painel-botoes .p-button {
+            width: 200px;
+            height: 80px;
+            font-size: 16px;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <h:form id="formEditarFornecedor">
+
+        <h1>Editar Fornecedor</h1>
+
+        <p:panel header="Informações do Fornecedor" style="width: 50%; margin: auto;">
+
+            <p:panelGrid columns="2" style="width:100%" columnClasses="label, value">
+
+                <p:outputLabel value="Razão Social:" for="razaoSocial" />
+                <p:inputText id="razaoSocial" value="#{fornecedorBean.fornecedorSelecionado.razaoSocial}" />
+
+                <p:outputLabel value="Email da Empresa:" for="email" />
+                <p:inputText id="email" value="#{fornecedorBean.fornecedorSelecionado.email}" />
+
+				<p:outputLabel value="Nome de Contato:" for="contatoNome" />
+                <p:inputText id="contatoNome" value="#{fornecedorBean.fornecedorSelecionado.contatoNome}" />
+                
+				<p:outputLabel value="Email de Contato:" for="contatoEmail" />
+                <p:inputText id="contatoEmail" value="#{fornecedorBean.fornecedorSelecionado.contatoEmail}" />
+
+                <p:outputLabel value="Status:" for="ativo" />
+                <p:selectOneMenu id="ativo" value="#{fornecedorBean.fornecedorSelecionado.ativo}">
+                    <f:selectItem itemLabel="Ativo" itemValue="true" />
+                    <f:selectItem itemLabel="Inativo" itemValue="false" />
+                </p:selectOneMenu>
+
+                <p:outputLabel value="CNPJ" for="cnpj" />
+                <p:inputText id="cnpj" value="#{fornecedorBean.fornecedorSelecionado.cnpj}" maxlength="14">
+			    <f:validateRegex pattern="\d{14}" 
+			                     for="cnpj" 
+			                     message="CNPJ deve ter 14 dígitos numéricos" />
+				</p:inputText>
+
+            </p:panelGrid>
+
+        </p:panel>
+
+        <div class="painel-botoes" style="margin-top: 20px;">
+            <!-- Botão Salvar -->
+            <p:commandButton value="Salvar" action="#{fornecedorBean.salvarFornecedorSelecionado}"
+                             update="@form"
+                             icon="pi pi-save"
+                             style="background-color:#4CAF50; border:none; color:white;"
+                             onmouseover="this.style.backgroundColor='#388E3C';"
+                             onmouseout="this.style.backgroundColor='#4CAF50';" />
+
+            <!-- Botão Voltar -->
+            <p:button value="Voltar" outcome="listarFornecedores.xhtml"
+                      icon="pi pi-arrow-left"
+                      style="background-color:#f44336; border:none; color:white;"
+                      onmouseover="this.style.backgroundColor='#d32f2f';"
+                      onmouseout="this.style.backgroundColor='#f44336';" />
+        </div>
+
+    </h:form>
+</h:body>
+</html>

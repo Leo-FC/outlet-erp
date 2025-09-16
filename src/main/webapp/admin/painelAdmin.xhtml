@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Painel do Administrador</title>
+    <style>
+        body {
+            background-color: #2c2c2c;
+            color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+            color: #f0f0f0;
+            font-size: 36px;
+            margin-bottom: 40px;
+        }
+        .painel-botoes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .painel-botoes .p-button {
+            width: 200px;
+            height: 80px;
+            font-size: 16px;
+        }
+    </style>
+</h:head>
+<h:body>
+
+    <h1>Painel do Administrador</h1>
+
+    <div class="painel-botoes">
+        <!-- Gerenciar Usuários -->
+        <p:button value="Gerenciar Usuários" icon="pi pi-users"
+          outcome="usuarios/gerenciarUsuarios"
+          styleClass="p-button-raised p-button-rounded p-button-info"/>
+          
+        <p:button value="Gerenciar Fornecedores" icon="pi pi-users"
+        outcome="fornecedores/gerenciarFornecedores"
+        styleClass="p-button-raised p-button-rounded p-button-info"/>
+        
+        <p:button value="Gerenciar Produtos" icon="pi pi-users"
+        outcome="produtos/gerenciarProdutos"
+        styleClass="p-button-raised p-button-rounded p-button-info"/>
+        
+        <p:button value="Voltar" icon="pi pi-arrow-left" 
+        	styleClass="ui-button-secondary" outcome="/index.xhtml"/>
+    </div>
+
+</h:body>
+</html>

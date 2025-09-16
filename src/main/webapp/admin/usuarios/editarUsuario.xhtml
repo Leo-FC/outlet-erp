@@ -1,0 +1,92 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Editar Usuário</title>
+    
+    <style>
+        body {
+            background-color: #2c2c2c;
+            color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+            color: #f0f0f0;
+            font-size: 36px;
+            margin-bottom: 40px;
+        }
+        .painel-botoes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .painel-botoes .p-button {
+            width: 200px;
+            height: 80px;
+            font-size: 16px;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <h:form id="formEditarUsuario">
+
+        <h1>Editar Usuário</h1>
+
+        <p:panel header="Informações do Usuário" style="width: 50%; margin: auto;">
+
+            <p:panelGrid columns="2" style="width:100%" columnClasses="label, value">
+
+                <p:outputLabel value="Nome Completo:" for="nome" />
+                <p:inputText id="nome" value="#{usuarioBean.usuarioSelecionado.nomeCompleto}" />
+
+                <p:outputLabel value="Email:" for="email" />
+                <p:inputText id="email" value="#{usuarioBean.usuarioSelecionado.email}" />
+
+                <p:outputLabel value="Categoria:" for="categoria" />
+                <p:selectOneMenu id="categoria" value="#{usuarioBean.usuarioSelecionado.categoriaUsuario}">
+                    <f:selectItems value="#{usuarioBean.categorias}" var="cat"
+                                   itemLabel="#{cat}" itemValue="#{cat}" />
+                </p:selectOneMenu>
+
+                <p:outputLabel value="Status:" for="ativo" />
+                <p:selectOneMenu id="ativo" value="#{usuarioBean.usuarioSelecionado.ativo}">
+                    <f:selectItem itemLabel="Ativo" itemValue="true" />
+                    <f:selectItem itemLabel="Inativo" itemValue="false" />
+                </p:selectOneMenu>
+
+                <p:outputLabel value="CPF:" for="cpf" />
+                <p:inputText id="cpf" value="#{usuarioBean.usuarioSelecionado.cpf}" maxlength="11">
+			    <f:validateRegex pattern="\d{11}" 
+			                     for="cpf" 
+			                     message="CPF deve ter 11 dígitos numéricos" />
+				</p:inputText>
+
+            </p:panelGrid>
+
+        </p:panel>
+
+        <div class="painel-botoes" style="margin-top: 20px;">
+            <!-- Botão Salvar -->
+            <p:commandButton value="Salvar" action="#{usuarioBean.salvarUsuarioSelecionado}"
+                             update="@form"
+                             icon="pi pi-save"
+                             style="background-color:#4CAF50; border:none; color:white;"
+                             onmouseover="this.style.backgroundColor='#388E3C';"
+                             onmouseout="this.style.backgroundColor='#4CAF50';" />
+
+            <!-- Botão Voltar -->
+            <p:button value="Voltar" outcome="listarUsuarios.xhtml"
+                      icon="pi pi-arrow-left"
+                      style="background-color:#f44336; border:none; color:white;"
+                      onmouseover="this.style.backgroundColor='#d32f2f';"
+                      onmouseout="this.style.backgroundColor='#f44336';" />
+        </div>
+
+    </h:form>
+</h:body>
+</html>

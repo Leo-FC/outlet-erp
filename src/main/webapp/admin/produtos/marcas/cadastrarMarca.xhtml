@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Cadastro de Marca</title>
+</h:head>
+<h:body>
+    <h:form id="marcaForm">
+        <h:panelGrid columns="1" cellpadding="2">
+            <p:outputLabel for="nome" value="Nome da Marca:" />
+            <p:inputText id="nome" value="#{marcaBean.novaMarca.nomeMarca}" required="true" />
+            <p:message for="nome" />
+
+            <p:outputLabel for="nacionalidade" value="Nacionalidade:" />
+            <p:selectOneMenu id="nacionalidade" value="#{marcaBean.novaMarca.nacionalidade}">
+                <f:selectItem itemLabel="Selecione a Nacionalidade" itemValue="#{null}" />
+                <f:selectItems value="#{marcaBean.nacionalidades}" var="n" itemLabel="#{n}" itemValue="#{n}" />
+            </p:selectOneMenu>
+        </h:panelGrid>
+        
+        <br></br>
+        <p:commandButton value="Salvar" 
+                         action="#{marcaBean.salvar}" 
+                         process="@form"
+                         oncomplete="PF('dlgMarca').hide();"
+                         update=":produtoForm:marca" />
+    </h:form>
+</h:body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Cadastro de Categoria</title>
+</h:head>
+<h:body>
+    <h:form id="categoriaForm">
+        <h:panelGrid columns="1" cellpadding="2">
+            <p:outputLabel for="nome" value="Nome da Roupa:" />
+            <p:inputText id="nome" value="#{categoriaBean.novaCategoria.nomeRoupa}" required="true" />
+            <p:message for="nome" />
+
+            <p:outputLabel for="tipo" value="Tipo de Roupa:" />
+            <p:selectOneMenu id="tipo" value="#{categoriaBean.novaCategoria.tipoRoupa}">
+                <f:selectItem itemLabel="Selecione um Tipo" itemValue="#{null}" />
+                <f:selectItems value="#{categoriaBean.tiposRoupa}" var="tipo" itemLabel="#{tipo}" itemValue="#{tipo}" />
+            </p:selectOneMenu>
+        </h:panelGrid>
+        
+        <br></br>
+        <p:commandButton value="Salvar" 
+                         action="#{categoriaBean.salvar}" 
+                         process="@form"
+                         oncomplete="PF('dlgCategoria').hide();"
+                         update=":produtoForm:categoria" />
+    </h:form>
+</h:body>
+</html>

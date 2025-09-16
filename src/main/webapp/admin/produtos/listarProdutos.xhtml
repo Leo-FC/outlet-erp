@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+    <title>Lista de Produtos</title>
+</h:head>
+<h:body>
+
+    <h:form id="formProdutos">
+        <p:panel header="Produtos Cadastrados">
+            <p:messages id="messages" showDetail="true" closable="true" />
+
+            <p:dataTable id="tabelaProdutos" 
+                         widgetVar="dataTable" 
+                         value="#{produtoBean.produtos}" 
+                         var="produto" 
+                         emptyMessage="Nenhum produto cadastrado.">
+                
+                <p:column headerText="Nome do Produto" filterBy="#{produto.nomeProduto}">
+                    <h:outputText value="#{produto.nomeProduto}" />
+                </p:column>
+                
+                <p:column headerText="Categoria" filterBy="#{produto.categoria.nomeRoupa}">
+                    <h:outputText value="#{produto.categoria.nomeRoupa}" />
+                </p:column>
+
+                <p:column headerText="Tipo de Roupa" filterBy="#{produto.categoria.tipoRoupa}">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('dataTable').filter()">
+                            <f:selectItem itemLabel="Todos" itemValue="#{null}" />
+                            <f:selectItems value="#{produtoBean.tiposRoupas}" var="tipo" itemLabel="#{tipo}" itemValue="#{tipo}"/>
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputText value="#{produto.categoria.tipoRoupa}" />
+                </p:column>
+                
+                <p:column headerText="Marca" filterBy="#{produto.marca.nomeMarca}">
+                    <h:outputText value="#{produto.marca.nomeMarca}" />
+                </p:column>
+
+                <p:column headerText="Nacionalidade" filterBy="#{produto.marca.nacionalidade}">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('dataTable').filter()">
+                            <f:selectItem itemLabel="Todos" itemValue="#{null}" />
+                            <f:selectItems value="#{produtoBean.nacionalidades}" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputText value="#{produto.marca.nacionalidade}" />
+                </p:column>
+
+                <p:column headerText="Fornecedor" filterBy="#{produto.fornecedor.razaoSocial}">
+                    <h:outputText value="#{produto.fornecedor.razaoSocial}" />
+                </p:column>
+                
+                <p:column headerText="Ações" width="100" style="text-align: center;">
+                    <p:button 
+                        icon="pi pi-pencil" 
+                        styleClass="ui-button-info ui-button-flat"
+                        outcome="/admin/produtos/cadastrarProduto.xhtml?id=#{produto.idProduto}"
+                        title="Editar" />
+                    
+                    <p:commandButton 
+                        icon="pi pi-trash" 
+                        title="Excluir" 
+                        action="#{produtoBean.prepararExclusaoProduto(produto)}" 
+                        oncomplete="PF('confirmacaoExclusao').show()"
+                        update="@form"
+                        styleClass="ui-button-danger ui-button-flat"
+                    />
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+        
+        <div class="p-d-flex p-jc-between" style="margin-top: 10px;">
+            <p:button value="Voltar" 
+                      outcome="gerenciarProdutos" 
+                      icon="pi pi-arrow-left"
+                      styleClass="ui-button-info"
+                      style="margin-right: 15px;" /> <p:button value="Novo Produto" 
+                      outcome="cadastrarProduto" 
+                      icon="pi pi-plus"
+                      styleClass="ui-button-success" />
+        </div>
+
+    </h:form>
+
+    <p:confirmDialog 
+        widgetVar="confirmacaoExclusao" 
+        header="Confirmação" 
+        message="Tem certeza que deseja excluir este produto?" 
+        icon="pi pi-exclamation-triangle">
+        
+        <p:commandButton 
+            value="Sim" 
+            icon="pi pi-check" 
+            action="#{produtoBean.confirmarExclusaoProduto}" 
+            process="@this"
+            oncomplete="PF('confirmacaoExclusao').hide()" 
+            update=":formProdutos:tabelaProdutos :formProdutos:messages"
+        />
+        
+        <p:commandButton 
+            value="Não" 
+            type="button" 
+            icon="pi pi-times" 
+            onclick="PF('confirmacaoExclusao').hide()" 
+        />
+        
+    </p:confirmDialog>
+</h:body>
+</html>

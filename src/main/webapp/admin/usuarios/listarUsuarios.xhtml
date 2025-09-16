@@ -1,0 +1,137 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Listar Usuários</title>
+    <style>
+        body {
+            background-color: #2c2c2c;
+            color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #f0f0f0;
+        }
+        .painel-botoes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .painel-botoes .p-button {
+            width: 200px;
+            height: 80px;
+            font-size: 16px;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <h:form id="formUsuarios">
+
+        <h2>Listar Usuários</h2>
+
+        <p:panel header="Filtros" toggleable="true">
+            <p:panelGrid columns="4" style="width:100%">
+
+                <p:outputLabel value="Nome:" for="fNome" />
+                <p:inputText id="fNome" value="#{usuarioBean.filtroNome}" />
+
+                <p:outputLabel value="E-mail:" for="fEmail" />
+                <p:inputText id="fEmail" value="#{usuarioBean.filtroEmail}" />
+
+                <p:outputLabel value="Categoria:" for="fCategoria" />
+                <p:selectOneMenu id="fCategoria" value="#{usuarioBean.filtroCategoria}">
+                    <f:selectItem itemLabel="TODOS" itemValue="#{null}" />
+                    <f:selectItems value="#{usuarioBean.categorias}" var="cat"
+                                   itemLabel="#{cat}" itemValue="#{cat}" />
+                </p:selectOneMenu>
+
+                <p:outputLabel value="Status:" for="fAtivo" />
+                <p:selectOneMenu id="fAtivo" value="#{usuarioBean.filtroAtivo}">
+                    <f:selectItem itemLabel="TODOS" itemValue="#{null}" />
+                    <f:selectItem itemLabel="Ativos" itemValue="true" />
+                    <f:selectItem itemLabel="Inativos" itemValue="false" />
+                </p:selectOneMenu>
+
+            </p:panelGrid>
+
+            <div style="text-align:center; margin-top:15px;">
+                <p:commandButton value="Filtrar" 
+                                 action="#{usuarioBean.listarUsuariosComFiltros}"
+                                 update="tabelaUsuarios"
+                                 icon="pi pi-search"
+                                 style="margin-right:10px; background-color:#4CAF50; border:none; color:white;"
+                                 onmouseover="this.style.backgroundColor='#388E3C';"
+                                 onmouseout="this.style.backgroundColor='#4CAF50';" />
+
+                <p:commandButton value="Limpar" 
+                                 action="#{usuarioBean.limparFiltros}"
+                                 update="tabelaUsuarios,formUsuarios:fNome,formUsuarios:fEmail,formUsuarios:fCategoria,formUsuarios:fAtivo"
+                                 icon="pi pi-times"
+                                 style="background-color:#f44336; border:none; color:white;"
+                                 onmouseover="this.style.backgroundColor='#d32f2f';"
+                                 onmouseout="this.style.backgroundColor='#f44336';" />               
+            </div>
+        </p:panel>
+
+        <br/>
+
+        <p:dataTable id="tabelaUsuarios" value="#{usuarioBean.usuarios}" var="u"
+                     paginator="true" rows="10"
+                     emptyMessage="Nenhum usuário encontrado">
+
+            <p:column headerText="Nome">
+                #{u.nomeCompleto}
+            </p:column>
+
+            <p:column headerText="Email" style="word-break: break-all; max-width: 200px;">
+                <h:outputText value="#{u.email}" />
+            </p:column>
+
+            <p:column headerText="CPF">
+                <h:outputText value="#{u.cpfFormatado}" />
+            </p:column>
+
+            <p:column headerText="Data de Cadastro">
+                <h:outputText value="#{u.dataCadastroDate}">
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo"/>
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="Categoria">
+                #{u.categoriaUsuario}
+            </p:column>
+
+            <p:column headerText="Status">
+                <h:outputText value="#{u.ativo ? 'Ativo' : 'Inativo'}" />
+            </p:column>
+
+            <p:column headerText="Ações" style="text-align:center; width:150px">
+
+                <p:commandButton value="Editar" icon="pi pi-pencil"
+                                 action="#{usuarioBean.selecionarUsuario(u)}"
+                                 ajax="false"/>
+                                
+
+                <p:commandButton value="Excluir" icon="pi pi-trash"
+                                 action="#{usuarioBean.excluir(u)}"
+                                 update="tabelaUsuarios"
+                                 style="background-color:#f44336; border:none; color:white;"
+                                 onmouseover="this.sstyle.backgroundColor='#d32f2f';"
+                                 onmouseout="this.style.backgroundColor='#f44336';" />
+            </p:column>
+
+        </p:dataTable>
+
+        <div style="text-align:center; margin-top:20px;">
+	        <p:button value="Voltar" outcome="gerenciarUsuarios.xhtml"
+	                  icon="pi pi-arrow-left" styleClass="ui-button-secondary"/>
+   		</div>
+
+    </h:form>
+</h:body>
+</html>

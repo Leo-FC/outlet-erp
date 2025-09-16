@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Gerenciamento de Fornecedores</title>
+        <style>
+        body {
+            background-color: #2c2c2c;
+            color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+            color: #f0f0f0;
+            font-size: 36px;
+            margin-bottom: 40px;
+        }
+        .painel-botoes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .painel-botoes .p-button {
+            width: 200px;
+            height: 80px;
+            font-size: 16px;
+        }
+    </style>
+</h:head>
+<h:body class="dark-mode">
+    <h:form>
+    <h1 style="text-align:center; margin-bottom:20px;">Gerenciar Fornecedores</h1>
+
+    <p:panel style="width:50%; margin:auto; padding:20px;" header="Ações disponíveis">
+        <p:button value="Cadastrar Fornecedores" icon="pi pi-plus" styleClass="ui-button-success" outcome="/admin/fornecedores/cadastrarFornecedor.xhtml"/>
+        <br></br>
+        <p:button value="Visualizar Fornecedores" icon="pi pi-eye" styleClass="ui-button-info" outcome="/admin/fornecedores/listarFornecedores.xhtml"/>
+        <br></br>
+        <p:button value="Voltar" icon="pi pi-arrow-left" styleClass="ui-button-secondary" outcome="/admin/painelAdmin.xhtml"/>
+    </p:panel>
+</h:form>
+
+</h:body>
+</html>

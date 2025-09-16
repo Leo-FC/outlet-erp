@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+    <title>Cadastro de Produto</title>
+</h:head>
+<h:body>
+    <h:form id="produtoForm">
+        <p:growl id="growl" showDetail="true" />
+        <p:panel header="Novo Produto">
+            <h:panelGrid columns="3" cellpadding="5">
+                
+                <p:outputLabel for="nome" value="Nome do Produto:" />
+                <p:inputText id="nome" value="#{produtoBean.produto.nomeProduto}" required="true" />
+                <p:message for="nome" />
+                
+                <p:outputLabel for="categoria" value="Categoria:" />
+                <h:panelGroup layout="block">
+                    <p:selectOneMenu id="categoria" value="#{produtoBean.produto.categoria}" converter="omnifaces.SelectItemsConverter" required="true">
+                        <f:selectItem itemLabel="Selecione uma Categoria" itemValue="#{null}" />
+                        <f:selectItems value="#{produtoBean.categorias}" var="cat" itemLabel="#{cat.nomeRoupa}" itemValue="#{cat}" />
+                    </p:selectOneMenu>
+                </h:panelGroup>
+                <h:panelGroup layout="block" styleClass="p-d-flex p-ai-center">
+                    <p:commandButton icon="pi pi-plus" 
+                                     type="button" 
+                                     styleClass="ui-button-flat"
+                                     onclick="PF('dlgCategoria').show();"
+                                     title="Adicionar Categoria" />
+                    <p:commandButton icon="pi pi-list"
+                                     type="button"
+                                     styleClass="ui-button-flat"
+                                     onclick="PF('dlgVisualizarCategorias').show();"
+                                     title="Visualizar Categorias" />
+                </h:panelGroup>
+                                 
+                <p:outputLabel for="fornecedor" value="Fornecedor:" />
+                <p:selectOneMenu id="fornecedor" value="#{produtoBean.produto.fornecedor}" converter="omnifaces.SelectItemsConverter" required="true">
+                    <f:selectItem itemLabel="Selecione um Fornecedor" itemValue="#{null}" />
+                    <f:selectItems value="#{produtoBean.fornecedoresAtivos}" var="forn" itemLabel="#{forn.razaoSocial}" itemValue="#{forn}" />
+                </p:selectOneMenu>
+                <p:message for="fornecedor" />
+                
+                <p:outputLabel for="marca" value="Marca:" />
+                <h:panelGroup layout="block">
+                    <p:selectOneMenu id="marca" value="#{produtoBean.produto.marca}" converter="omnifaces.SelectItemsConverter" required="true">
+                        <f:selectItem itemLabel="Selecione uma Marca" itemValue="#{null}" />
+                        <f:selectItems value="#{produtoBean.marcas}" var="marca" itemLabel="#{marca.nomeMarca}" itemValue="#{marca}" />
+                    </p:selectOneMenu>
+                </h:panelGroup>
+                <h:panelGroup layout="block" styleClass="p-d-flex p-ai-center">
+                    <p:commandButton icon="pi pi-plus" 
+                                     type="button" 
+                                     styleClass="ui-button-flat"
+                                     onclick="PF('dlgMarca').show();"
+                                     title="Adicionar Marca" />
+                    <p:commandButton icon="pi pi-list"
+                                     type="button"
+                                     styleClass="ui-button-flat"
+                                     onclick="PF('dlgVisualizarMarcas').show();"
+                                     title="Visualizar Marcas" />
+                </h:panelGroup>
+                
+            </h:panelGrid>
+            
+            <p:button value="Voltar" outcome="gerenciarProdutos" style="margin-left: 10px;" />
+            
+            <p:commandButton value="Salvar Produto" 
+                             action="#{produtoBean.salvar}" 
+                             update="@form" 
+                             process="@form"
+                             style= "margin-left: 10px"/>
+        </p:panel>
+    </h:form>
+
+    <p:dialog header="Nova Categoria" widgetVar="dlgCategoria" modal="true" resizable="false">
+        <ui:include src="categorias/cadastrarCategoria.xhtml" />
+    </p:dialog>
+    
+    <p:dialog header="Nova Marca" widgetVar="dlgMarca" modal="true" resizable="false">
+        <ui:include src="marcas/cadastrarMarca.xhtml" />
+    </p:dialog>
+    
+    <p:dialog header="Categorias Registradas" widgetVar="dlgVisualizarCategorias" modal="true" resizable="false" responsive="true" width="600">
+        <h:form id="formVisualizarCategorias">
+            <p:growl id="growlVisualizar" showDetail="true" />
+            <p:dataTable id="dtCategorias" value="#{produtoBean.categorias}" var="cat" scrollable="true" scrollHeight="250">
+                <p:column headerText="Nome da Roupa">
+                    <h:outputText value="#{cat.nomeRoupa}" />
+                </p:column>
+                <p:column headerText="Tipo de Roupa">
+                    <h:outputText value="#{cat.tipoRoupa}" />
+                </p:column>
+                <p:column style="width:50px; text-align: center;">
+                    <p:commandButton icon="pi pi-trash" 
+                                     action="#{produtoBean.prepararExclusaoCategoria(cat)}" 
+                                     oncomplete="PF('confirmExclusaoCategoria').show();"
+                                     update=":formVisualizarCategorias:dtCategorias :formVisualizarCategorias:growlVisualizar :confirmacaoCategoriaForm"
+                                     styleClass="ui-button-danger ui-button-flat"
+                                     title="Excluir" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:dialog>
+
+    <p:dialog header="Marcas Registradas" widgetVar="dlgVisualizarMarcas" modal="true" resizable="false" responsive="true" width="600">
+        <h:form id="formVisualizarMarcas">
+            <p:growl id="growlVisualizar" showDetail="true" />
+            <p:dataTable id="dtMarcas" value="#{produtoBean.marcas}" var="marca" scrollable="true" scrollHeight="250">
+                <p:column headerText="Nome da Marca">
+                    <h:outputText value="#{marca.nomeMarca}" />
+                </p:column>
+                <p:column headerText="Nacionalidade">
+                    <h:outputText value="#{marca.nacionalidade}" />
+                </p:column>
+                <p:column style="width:50px; text-align: center;">
+                    <p:commandButton icon="pi pi-trash" 
+                                     action="#{produtoBean.prepararExclusaoMarca(marca)}" 
+                                     oncomplete="PF('confirmExclusaoMarca').show();"
+                                     update=":formVisualizarMarcas:dtMarcas :formVisualizarMarcas:growlVisualizar :confirmacaoMarcaForm"
+                                     styleClass="ui-button-danger ui-button-flat"
+                                     title="Excluir" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:dialog>
+    
+    <p:dialog header="Confirmação de Exclusão" widgetVar="confirmExclusaoCategoria" modal="true" resizable="false">
+        <h:form id="confirmacaoCategoriaForm">
+            <p:outputPanel style="margin-bottom: 15px;">
+                <h:outputText value="Tem certeza que deseja excluir esta categoria: " />
+                <h:outputText value="#{produtoBean.categoriaParaExcluir.nomeRoupa}" style="font-weight: bold;"/>
+                <h:outputText value="?" />
+            </p:outputPanel>
+            <br/>
+            <h:panelGrid columns="2" cellpadding="5">
+                <p:commandButton value="Não" type="button" onclick="PF('confirmExclusaoCategoria').hide();" styleClass="ui-button-flat"/>
+                <p:commandButton value="Sim"
+                                 action="#{produtoBean.confirmarExclusaoCategoria}"
+                                 update=":formVisualizarCategorias:dtCategorias :formVisualizarCategorias:growlVisualizar :produtoForm:categoria"
+                                 oncomplete="PF('confirmExclusaoCategoria').hide();" />
+            </h:panelGrid>
+        </h:form>
+    </p:dialog>
+    
+    <p:dialog header="Confirmação de Exclusão" widgetVar="confirmExclusaoMarca" modal="true" resizable="false">
+        <h:form id="confirmacaoMarcaForm">
+            <p:outputPanel style="margin-bottom: 15px;">
+                <h:outputText value="Tem certeza que deseja excluir esta marca: " />
+                <h:outputText value="#{produtoBean.marcaParaExcluir.nomeMarca}" style="font-weight: bold;"/>
+                <h:outputText value="?" />
+            </p:outputPanel>
+            <br/>
+            <h:panelGrid columns="2" cellpadding="5">
+                <p:commandButton value="Não" type="button" onclick="PF('confirmExclusaoMarca').hide();" styleClass="ui-button-flat"/>
+                <p:commandButton value="Sim"
+                                 action="#{produtoBean.confirmarExclusaoMarca}"
+                                 update=":formVisualizarMarcas:dtMarcas :formVisualizarMarcas:growlVisualizar :produtoForm:marca"
+                                 oncomplete="PF('confirmExclusaoMarca').hide();" />
+            </h:panelGrid>
+        </h:form>
+    </p:dialog>
+    
+</h:body>
+</html>
