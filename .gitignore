@@ -1,0 +1,90 @@
+# ==========================
+# Java
+# ==========================
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# Compiled bytecode directories
+**/bin/
+**/out/
+
+# ==========================
+# IDE
+# ==========================
+# Eclipse
+.metadata/
+*.tmp
+*.bak
+*.swp
+*~.nib
+*.launch
+.project
+.classpath
+.settings/
+.apt_generated/
+.factorypath
+.recommenders/
+
+# VSCode
+.idea/
+.vscode/
+
+# ==========================
+# Maven
+# ==========================
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# ==========================
+# Apache Tomcat
+# ==========================
+logs/
+temp/
+work/
+
+# ==========================
+# Arquivos de banco de dados (MySQL dumps etc.)
+# ==========================
+*.sql
+*.sql.gz
+*.dump
+
+# ==========================
+# Arquivos XML / XHTML
+# ==========================
+# MANTER persistence.xml no versionamento
+# Ignorar arquivos temporários ou backups
+*.xml~
+*.xhtml~
+*.bak
+
+# ==========================
+# Sistema Operacional / Editor
+# ==========================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ==========================
+# Arquivos de ambiente / segurança
+# ==========================
+.env
+.env.*
+
+# ==========================
+# Persistence
+# ==========================
+/src/main/resources/META-INF/persistence.xml
