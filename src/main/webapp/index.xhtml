@@ -3,19 +3,241 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui">
 <h:head>
+	<script>
+		var modal = document.getElementById('id01');
+	</script>
     <title>Página Inicial - ERP</title>
+    <style>
+		body{
+			background-image: url("https://ordersinseconds.com/wp-content/uploads/2022/04/AdobeStock_308213916-scaled-1-scaled.webp");
+		}
+		
+		.container {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+		}
+		
+		.fundolog {
+			background-color: #17202A;
+			width: 400px;
+			height: 450px;
+			border: 5px #154360;
+			border-radius: 30px;
+			opacity: 97%;
+			margin-top:8%;
+			justify-content: flex-start;
+			padding: 20px;
+		}
+		
+		.telalog{
+			text-align: center;
+  			margin-top: 40px;
+		}
+		
+		.botaologin {
+			 background-color: #3498DB; 
+			 border: none;
+			 color: white;
+			 padding: 10px 32px;
+			 text-align: center;
+			 text-decoration: none;
+			 font-size: 16px;
+			 border-radius: 5px;
+			 padding-bottom: 10px;
+		}
+		
+		.textlog{
+			color: white;
+			font-family: monospace;
+			font-size: 30px;
+			padding-bottom: 20px;
+		}
+		
+		.textofinal{
+			color: white;
+			font-family: monospace;
+		}
+		
+		.paineladmbutton{
+			
+		}
+		
+		/* tela de login */
+		.modal {
+		  display: none; 
+		  position: fixed; 
+		  z-index: 1; 
+		  left: 0;
+		  top: 0;
+		  width: 100%;
+		  height: 100%; 
+		  overflow: auto;
+		  background-color: rgb(0,0,0);
+		  background-color: rgba(0,0,0,0.4);
+		  justify-content: center;
+		  align-items: center;
+		  padding-top: 60px;
+		}
+		
+		.modal-content {
+		  background-color: #1B2631;
+		  padding-top: 20px;
+		  border-radius: 30px;
+		  width: 100%%;
+		  height: 90%;
+		  margin-right: 20%;
+		  margin-left: 20%;
+		}
+		
+		.avatar{
+			border-radius: 100%;
+			margin: auto;
+			display: block;
+			width: 120px;
+			height: 120px;
+			object-fit: cover;
+		}
+		
+
+		.close {
+		  position: absolute;
+		  right: 25px;
+		  top: 0;
+		  color: red;
+		  font-size: 50px;
+		  font-weight: bold;
+		}
+		
+		.close:hover,
+		.close:focus {
+		  color: red;
+		  cursor: pointer;
+		}
+		
+		.animate {
+		  -webkit-animation: animatezoom 0.6s;
+		  animation: animatezoom 0.6s
+		}
+		
+		@-webkit-keyframes animatezoom {
+		  from {-webkit-transform: scale(0)}
+		  to {-webkit-transform: scale(1)}
+		}
+		
+		@keyframes animatezoom {
+		  from {transform: scale(0)}
+		  to {transform: scale(1)}
+		}
+		
+		.containerlogin{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: flex-start;
+			padding: 20px;
+		}
+		
+		input[type="text"], input[type="password"]{
+			width: 30%;
+			height: 30px;
+			margin-bottom: 20px;
+		}
+		
+		input[type="checkbox"]{
+			width: 15px;
+			height: 10px;
+			margin: 10px;
+		}
+		
+		b{
+			color: white;
+			font-family: monospace;
+			font-size: 20px;
+		}
+		
+		.logbutton{
+			  background-color: #1ABC9C; 
+			  border: none;
+			  color: white;
+			  padding: 10px 32px;
+			  text-align: center;
+			  text-decoration: none;
+			  font-size: 16px;
+			  border-radius: 5px;
+			  margin-bottom: 10px
+		}
+		
+		.cancelbtn{
+			background-color: #E74C3C; 
+			  border: none;
+			  color: white;
+			  padding: 10px 20px;
+			  text-align: center;
+			  text-decoration: none;
+			  font-size: 16px;
+			  border-radius: 5px;
+			  padding-bottom: 10px;
+		}
+		
+		.fgpsw{
+			margin-bottom: 40px;
+		}
+		
+	</style>
 </h:head>
 <h:body>
-    <h:form>
-        <h1>Tela inicial, sem Login por enquanto</h1>
-
-        <p:commandButton value="Painel Administrador" 
-                         icon="pi pi-user-plus" 
-                         action="admin/painelAdmin.xhtml?faces-redirect=true" />
-
-        <br/><br/>
-
-        <h:outputText value="Selecione uma opção acima para começar." />
-    </h:form>
+	<div class="container">
+			<div class="fundolog">
+				<div class="telalog">
+					<h1 class="textlog"> Acesso ao Sistema </h1>
+		     
+			     <button class="botaologin" onclick="document.getElementById('id01').style.display='inline-block'">Faça seu Login</button>
+				 <P style="color: white; font-family: monospace;"> Coloque seus dados fornecidos pelo administrador </P>
+				 <div id="id01" class="modal">
+				     	<span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&#215;</span>
+				     
+				     <form class="modal-content animate" action="/action_page.php">
+				     	<div class="containerimg">
+				     		<img src="https://static.vecteezy.com/ti/vetor-gratis/p1/11209565-avatar-do-perfil-do-usuario-gratis-vetor.jpg" alt="Avatar" class="avatar"></img>
+				     	</div>
+				     	
+						<div class="containerlogin">
+							<label for="uname"><b>E-mail</b></label>
+							<input type="text" placeholder="E-mail:" name="uname"></input>
+							
+							<label for="psw"><b>Senha</b></label>
+							<input type="password" placeholder="Senha:" name="psw"></input>
+							
+							<button class="logbutton" type="submit">Login</button>
+							<label for="remember">
+								<input type="checkbox" checked="checked" name="remember"></input> 
+								<a style="color: white; font-family: monospace;">Lembrar de mim</a>
+							</label> <!-- Talvez eu vá tirar isso -->
+						</div>
+						
+						<div class="containerlogin">
+							<span class="fgpsw"><a style="color: #7FB3D5;" href="#">Esqueceu a senha?</a></span>
+							<button type="button" onclick="document.getElementById.style.display='none'" class="cancelbtn" >Cancel</button>
+						</div>
+				     </form>
+				 </div>
+				 <br></br>
+				 <br></br>
+				 <h:form>
+		       			<p:commandButton class="paineladmbutton" value="Painel Administrador" 
+		                        		icon="pi pi-user-plus" 
+		                        		action="admin/painelAdmin.xhtml?faces-redirect=true" />
+		       			<br/><br/>
+		
+		       			<h:outputText class="textofinal" value="Selecione uma opção acima para começar." />       
+		
+		    	</h:form>
+			 </div>
+		 </div>
+	</div>
 </h:body>
 </html>

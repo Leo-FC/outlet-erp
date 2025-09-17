@@ -1,53 +1,38 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
-<h:head>
-    <title>Gerenciamento de Produtos</title>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap');
         
-    
-        body {
-            background-color: #F4F6F8;
-            color: #34495E;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .main-container {
-            width: 90%;
+        /* Estilos específicos para este fragmento */
+        .produtos-main-container {
+            width: 100%;
             max-width: 600px;
             text-align: center;
             padding: 40px;
+            margin: auto; /* Centraliza o container no espaço disponível */
             background-color: #FFFFFF;
             border-radius: 12px;
-            border: 2px solid #8B0000;
-            box-shadow: 0 8px 20px rgba(139, 0, 0, 0.2);
+            /* border: 2px solid #8B0000;
+            box-shadow: 0 8px 20px rgba(139, 0, 0, 0.2); */
         }
-
-        .main-title {
+        .produtos-main-title {
         	font-family: 'Poppins', sans-serif;
-        	
             font-size: 2.8em;
             color: #2C3E50;
             margin-bottom: 30px;
             font-weight: 600;
             letter-spacing: 1px;
         }
-
-        .button-group {
+        .produtos-button-group {
             display: flex;
             flex-direction: column;
             gap: 18px;
             margin-top: 30px;
         }
-
-        .button-group .p-button {
+        .produtos-button-group .p-button {
             width: 100%;
             height: 70px;
             font-size: 1.2em;
@@ -55,46 +40,17 @@
             justify-content: center;
             border-radius: 8px;
         }
-
-        /* Botão Cadastrar Produtos (borda verde) */
-        .ui-button-principal {
-            background-color: transparent !important;
-            border: 2px solid #28A745 !important;
-            color: #28A745 !important;
-        }
-        .ui-button-principal:hover {
-            background-color: #28A745 !important;
-            color: #FFFFFF !important;
-        }
-
-        /* Botão Visualizar Produtos (borda azul) */
-        .ui-button-info {
-            background-color: transparent !important;
-            border: 2px solid #007BFF !important;
-            color: #007BFF !important;
-        }
-        .ui-button-info:hover {
-            background-color: #007BFF !important;
-            color: #FFFFFF !important;
-        }
-
-        /* Botão Voltar (borda cinza) */
-        .ui-button-secondary {
-            background-color: transparent !important;
-            border: 2px solid #6C757D !important;
-            color: #6C757D !important;
-        }
-        .ui-button-secondary:hover {
-            background-color: #6C757D !important;
-            color: #FFFFFF !important;
-        }
+        .produtos-button-group .ui-button-principal { background-color: transparent !important; border: 2px solid #28A745 !important; color: #28A745 !important; }
+        .produtos-button-group .ui-button-principal:hover { background-color: #28A745 !important; color: #FFFFFF !important; }
+        .produtos-button-group .ui-button-info { background-color: transparent !important; border: 2px solid #007BFF !important; color: #007BFF !important; }
+        .produtos-button-group .ui-button-info:hover { background-color: #007BFF !important; color: #FFFFFF !important; }
     </style>
-</h:head>
-<h:body>
-    <div class="main-container">
-        <h:outputText value="Gerenciamento de Produtos" styleClass="main-title"/>
+
+    <div class="produtos-main-container">
+        <h:outputText value="Gerenciamento de Produtos" styleClass="produtos-main-title"/>
+        
         <h:form>
-            <div class="button-group">
+            <div class="produtos-button-group">
                 <p:button value="Cadastrar Produtos"
                           icon="pi pi-plus"
                           styleClass="ui-button-principal"
@@ -105,12 +61,8 @@
                           styleClass="ui-button-info"
                           outcome="/admin/produtos/listarProdutos.xhtml"/>
                           
-                <p:button value="Voltar"
-                          icon="pi pi-arrow-left"
-                          styleClass="ui-button-secondary"
-                          outcome="/admin/painelAdmin.xhtml"/>
-            </div>
+                </div>
         </h:form>
     </div>
-</h:body>
-</html>
+
+</ui:composition>
