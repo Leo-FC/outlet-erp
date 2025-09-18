@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Cadastro de Usuário</title>
+</h:head>
+
+<h:body>
+    <p:card title="Cadastro de Usuário" style="width: 30rem; margin: 0 auto; text-align: center;">
+        <h:form>
+            <p:messages id="messages" autoUpdate="true"/>
+
+            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                
+                <p:outputLabel for="nome" value="Nome Completo:"/>
+                <p:inputText id="nome" value="#{usuarioBean.usuario.nomeCompleto}" required="true"
+                             requiredMessage="O nome é obrigatório."/>
+
+                <p:outputLabel for="cpf" value="CPF:"/>
+                <p:inputText id="cpf" value="#{usuarioBean.usuario.cpf}" required="true"
+                             requiredMessage="O CPF é obrigatório."
+                             maxlength="11"> <p:keyFilter mask="num"/> </p:inputText>
+
+                <p:outputLabel for="email" value="Email:"/>
+                <p:inputText id="email" value="#{usuarioBean.usuario.email}" required="true"
+                             requiredMessage="O email é obrigatório."/>
+
+                <p:outputLabel for="senha" value="Senha:"/>
+                <p:password id="senha" value="#{usuarioBean.usuario.senha}" required="true"
+                            requiredMessage="A senha é obrigatória." feedback="false"/>
+                
+                <p:outputLabel for="categoria" value="Categoria:"/>
+                <p:selectOneMenu id="categoria" value="#{usuarioBean.usuario.categoriaUsuario}" required="true"
+                                 requiredMessage="A categoria é obrigatória.">
+                    <f:selectItem itemLabel="Selecione..." itemValue="#{null}"/>
+                    <f:selectItems value="#{usuarioBean.categorias}" var="cat"
+                                   itemLabel="#{cat.toString()}" itemValue="#{cat}"/>
+                </p:selectOneMenu>
+            </p:panelGrid>
+
+            <p:commandButton value="Cadastrar" action="#{usuarioBean.salvar}"
+                             style="margin-top: 20px;"/>
+            
+            <p:button value="Voltar para Login" outcome="/login.xhtml" style="margin-top: 10px;"/>
+            
+        </h:form>
+    </p:card>
+</h:body>
+</html>

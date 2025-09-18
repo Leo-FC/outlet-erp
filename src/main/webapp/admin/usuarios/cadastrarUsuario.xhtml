@@ -89,7 +89,6 @@
 		    background-color: #c82333 !important; /* vermelho mais escuro */
 		}
 
-		        
     </style>
 </h:head>
 <h:body>
@@ -98,7 +97,6 @@
             <p:messages autoUpdate="true" closable="true" />
 
             <p:card styleClass="card-custom">
-                <!-- Título centralizado com fonte maior -->
                 <div class="card-header">Cadastro de Usuário</div>
 
                 <p:panelGrid columns="2" columnClasses="label-col,field-col" cellpadding="10">
@@ -114,6 +112,10 @@
                     <h:outputLabel for="email" value="Email:" />
                     <p:inputText id="email" value="#{usuarioBean.usuario.email}" required="true"
                                  requiredMessage="Email é obrigatório!" style="width:100%;"/>
+                    
+                    <h:outputLabel for="senha" value="Senha:" />
+                    <p:password id="senha" value="#{usuarioBean.usuario.senha}" required="true"
+                                requiredMessage="Senha é obrigatória!" feedback="false" style="width:100%;"/>
 
                     <h:outputLabel for="categoria" value="Categoria:" />
                     <p:selectOneMenu id="categoria" value="#{usuarioBean.usuario.categoriaUsuario}" required="true"
