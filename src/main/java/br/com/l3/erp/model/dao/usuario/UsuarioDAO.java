@@ -3,7 +3,6 @@ package br.com.l3.erp.model.dao.usuario;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import br.com.l3.erp.model.entity.usuario.CategoriaUsuario;

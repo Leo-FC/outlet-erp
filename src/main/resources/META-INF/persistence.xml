@@ -1,0 +1,31 @@
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             version="2.2"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+                                 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+    <persistence-unit name="erpPU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        
+        <class>br.com.l3.erp.model.entity.usuario.Usuario</class>
+        <class>br.com.l3.erp.model.entity.fornecedor.Fornecedor</class>
+        <class>br.com.l3.erp.model.entity.financeiro.CategoriaDespesa</class>
+        <class>br.com.l3.erp.model.entity.financeiro.ContaPagar</class>
+        <class>br.com.l3.erp.model.entity.produto.categoria.CategoriaProduto</class>
+        <class>br.com.l3.erp.model.entity.produto.Produto</class>
+        <class>br.com.l3.erp.model.entity.produto.marca.Marca</class>
+        
+        
+
+        <properties>
+			<property name="javax.persistence.jdbc.driver" value="${db.driver}"/>
+            <property name="javax.persistence.jdbc.url" value="${db.url}"/>
+            <property name="javax.persistence.jdbc.user" value="${db.username}"/>
+            <property name="javax.persistence.jdbc.password" value="${db.password}"/>
+
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.show_sql" value="true"/>
+             <property name="hibernate.jdbc.time_zone" value="America/Sao_Paulo"/>
+        </properties>
+    </persistence-unit>
+</persistence>
