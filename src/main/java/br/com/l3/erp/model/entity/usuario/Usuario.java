@@ -30,6 +30,9 @@ public class Usuario {
 	@Column(nullable = false, unique = true, length = 100) // email único
 	private String email;
 	
+    @Column(nullable = false)
+    private String senha;
+	
 	// grava data/hora do cadastro
     @Column(name = "data_cadastro", nullable = false)
 	private LocalDateTime dataCadastro;
@@ -104,6 +107,14 @@ public class Usuario {
 	public void setAtivo(boolean ativo) {
 		this.ativo = ativo;
 	}
+	public String getSenha() {
+		return senha;
+	}
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+	
+	
 	
 	
 }

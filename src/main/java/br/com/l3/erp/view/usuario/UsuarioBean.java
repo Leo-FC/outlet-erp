@@ -10,10 +10,12 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 //import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import br.com.l3.erp.model.dao.usuario.UsuarioDAO;
 import br.com.l3.erp.model.entity.usuario.CategoriaUsuario;
 import br.com.l3.erp.model.entity.usuario.Usuario;
+import br.com.l3.erp.security.PasswordEncoder;
 @Named
 @SessionScoped
 public class UsuarioBean implements Serializable {
@@ -23,6 +25,7 @@ public class UsuarioBean implements Serializable {
     private Usuario usuario = new Usuario(); // Para cadastro
     private Usuario usuarioSelecionado;      // Para edição
     private List<Usuario> usuarios;
+    private String senhaParaEdicao;
 
     private String filtroStatus = "TODOS";
     private String filtroNome;
@@ -46,7 +49,12 @@ public class UsuarioBean implements Serializable {
     // Cadastro
     public void salvar() {
         if (usuario.getId() == null) {
+        	String senhaCriptografada = PasswordEncoder.encode(usuario.getSenha());
+        	usuario.setSenha(senhaCriptografada);
             usuarioDAO.salvar(usuario);
+            
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário cadastrado com sucesso!"));
         }
         usuarios = null; // força recarregar lista
         usuario = new Usuario(); // limpa formulário
@@ -94,10 +102,26 @@ public class UsuarioBean implements Serializable {
  // Método para salvar o usuário selecionado
     public void salvarUsuarioSelecionado() {
         if (usuarioSelecionado != null) {
-            usuarioDAO.atualizar(usuarioSelecionado); // Atualiza no banco
-            listarUsuariosComFiltros(); // Atualiza a lista de usuários
+            
+            // 1. Verifica se o campo de senhaParaEdicao foi preenchido
+            //    (a variável `senhaParaEdicao` deve estar no seu LoginBean)
+            if (senhaParaEdicao != null && !senhaParaEdicao.trim().isEmpty()) {
+                // 2. Criptografa a nova senha antes de definir no objeto
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                usuarioSelecionado.setSenha(encoder.encode(senhaParaEdicao));
+                
+                // 3. Limpa a variável temporária para evitar que ela seja
+                //    usada novamente em uma nova edição
+                this.senhaParaEdicao = null;
+            }
+
+            // 4. Atualiza o usuário no banco de dados
+            usuarioDAO.atualizar(usuarioSelecionado);
+            
+            // 5. Adiciona mensagem de sucesso e atualiza a lista
+            listarUsuariosComFiltros();
             FacesContext.getCurrentInstance().addMessage(null, 
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário atualizado!"));
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário atualizado com sucesso!"));
         }
     }
 
@@ -134,5 +158,13 @@ public class UsuarioBean implements Serializable {
     public void setFiltroStatus(String filtroStatus) { this.filtroStatus = filtroStatus; }
 
     public List<CategoriaUsuario> getCategorias() { return categorias; }
+    
+    public String getSenhaParaEdicao() {
+        return senhaParaEdicao;
+    }
+
+    public void setSenhaParaEdicao(String senhaParaEdicao) {
+        this.senhaParaEdicao = senhaParaEdicao;
+    }
 }
 

@@ -1,7 +1,9 @@
 package br.com.l3.erp.model.dao.usuario;
 
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
@@ -11,6 +13,7 @@ import br.com.l3.erp.model.entity.usuario.Usuario;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@RequestScoped
 public class UsuarioDAO {
 
     private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("erpPU");
@@ -62,6 +65,24 @@ public class UsuarioDAO {
         EntityManager em = emf.createEntityManager();
         try {
             return em.find(Usuario.class, id);
+        } finally {
+            em.close();
+        }
+    }
+    
+    public Usuario buscarPorEmail(String email) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            // JPQL para encontrar um usuário pelo email
+            TypedQuery<Usuario> query = em.createQuery(
+                "SELECT u FROM Usuario u WHERE u.email = :email AND u.ativo = true", Usuario.class);
+            query.setParameter("email", email);
+            
+            // Retorna o resultado único da consulta
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            // Se nenhum usuário for encontrado, retorna null
+            return null;
         } finally {
             em.close();
         }

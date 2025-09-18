@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Página Inicial</title>
+</h:head>
+<h:body>
+    <p:card title="Bem-vindo ao Sistema!">
+        <p>Você acessou a página inicial. Esta é a página padrão para usuários que não se encaixam nas categorias específicas.</p>
+        <p>Seu email de login é: **<h:outputText value="#{loginBean.usuarioLogado.email}" />**</p>
+
+        <h:form>
+            <p:commandButton value="Logout" action="#{loginBean.logout}" icon="pi pi-sign-out" style="margin-top: 10px;"/>
+        </h:form>
+    </p:card>
+</h:body>
+</html>

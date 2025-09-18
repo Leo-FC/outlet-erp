@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Login ERP</title>
+    </h:head>
+
+<h:body style="background-color: #f0f2f5; font-family: sans-serif;">
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+        <p:card style="width: 25rem; text-align: center;">
+            <f:facet name="title">
+                <h:outputText value="Acesso ao Sistema" style="font-size: 1.5rem;"/>
+            </f:facet>
+
+            <h:form id="loginForm">
+                <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true"/>
+
+                <p:panelGrid columns="1" style="width: 100%;" layout="grid"
+                             styleClass="ui-panelgrid-blank ui-fluid">
+
+                    <p:outputLabel for="email" value="Email:"/>
+                    <p:inputText id="email" value="#{loginBean.email}"
+                                 placeholder="exemplo@dominio.com" required="true"
+                                 requiredMessage="O email é obrigatório."/>
+
+                    <p:outputLabel for="senha" value="Senha:"/>
+                    <p:password id="senha" value="#{loginBean.senha}"
+                                placeholder="******" required="true"
+                                requiredMessage="A senha é obrigatória." feedback="false"/>
+
+                    <f:facet name="footer">
+                        <p:commandButton value="Entrar" action="#{loginBean.autenticar}"
+                                         icon="pi pi-sign-in"
+                                         style="width:100%;" ajax="true"
+                                         update="@form"/>
+                    </f:facet>
+                </p:panelGrid>
+            </h:form>
+
+            <div style="margin-top: 15px;">
+                <h:outputText value="Não tem uma conta? "/>
+                <h:link value="Cadastre-se aqui" outcome="/publico/cadastro.xhtml" style="color: #1a73e8;"/>
+            </div>
+        </p:card>
+    </div>
+</h:body>
+</html>
