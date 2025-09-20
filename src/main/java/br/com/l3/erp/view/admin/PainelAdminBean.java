@@ -8,7 +8,6 @@ import javax.annotation.PostConstruct;
 @Named
 @ViewScoped
 public class PainelAdminBean implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     private String paginaAtual;

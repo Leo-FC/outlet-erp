@@ -86,3 +86,5 @@ Desktop.ini
 
 # ==========================
 database.properties
+/config.properties
+/outlet-erp/src/main/resources/config.properties

@@ -1,5 +1,7 @@
 package br.com.l3.erp.model.entity.produto;
 
+import java.io.Serializable;
+import java.util.Objects; // Importe esta classe
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,9 +19,11 @@ import br.com.l3.erp.model.entity.produto.marca.Marca;
 
 @Entity
 @Table(name = "produtos")
-public class Produto{
+public class Produto implements Serializable { // Mantive a implementação de Serializable para compatibilidade
 
-	@Id
+    private static final long serialVersionUID = 1L;
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_produto")
     private Long idProduto;
@@ -84,4 +88,17 @@ public class Produto{
         this.marca = marca;
     }
 
+    // Implementação do hashCode() e equals() baseada na chave primária (idProduto)
+    @Override
+    public int hashCode() {
+        return Objects.hash(idProduto);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Produto other = (Produto) obj;
+        return Objects.equals(idProduto, other.idProduto);
+    }
 }

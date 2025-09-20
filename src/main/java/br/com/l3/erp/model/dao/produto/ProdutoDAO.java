@@ -74,6 +74,7 @@ public class ProdutoDAO implements Serializable {
         return em.createQuery("SELECT p FROM Produto p", Produto.class).getResultList();
     }
     
+    
     public List<Marca> listarMarcas() {
     	EntityManager em = emf.createEntityManager();
 

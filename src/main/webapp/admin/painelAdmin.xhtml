@@ -103,6 +103,12 @@
                                  update=":formPainel:dashboardContent"
                                  styleClass="p-button-raised p-button-rounded p-button-info" 
                                  style="width: 100%; margin-bottom: 10px;"/>
+                                 
+                <p:commandButton value="Estoque" icon="pi pi-warehouse"
+				                 actionListener="#{painelAdminBean.navegarPara('/admin/estoque/gerenciarEstoque.xhtml')}"
+				                 update=":formPainel:dashboardContent"
+				                 styleClass="p-button-raised p-button-rounded p-button-info" 
+				                 style="width: 100%; margin-bottom: 10px;"/>
 
                 <p:button value="Sair" icon="pi pi-sign-out"
                           styleClass="ui-button-secondary" outcome="/login.xhtml" 
