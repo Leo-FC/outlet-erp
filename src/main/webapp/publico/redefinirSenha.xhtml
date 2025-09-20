@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Redefinir Senha</title>
+</h:head>
+<h:body>
+
+    <f:metadata>
+        <f:viewParam name="token" value="#{redefinirSenhaBean.token}" />
+    </f:metadata>
+
+    <h2>Redefinir Senha</h2>
+    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+    
+    <h:form>
+        <h:panelGrid columns="2" cellpadding="5">
+            <p:outputLabel for="novaSenha" value="Nova Senha:" />
+            <p:password id="novaSenha" value="#{redefinirSenhaBean.novaSenha}" required="true" feedback="true" />
+
+            <p:outputLabel for="confirmarSenha" value="Confirmar Senha:" />
+            <p:password id="confirmarSenha" value="#{redefinirSenhaBean.confirmarSenha}" required="true" />
+
+            <p:commandButton value="Redefinir Senha" action="#{redefinirSenhaBean.redefinir()}" update="@form" />
+        </h:panelGrid>
+    </h:form>
+</h:body>
+</html>

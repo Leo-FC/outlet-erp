@@ -167,4 +167,3 @@ public class UsuarioBean implements Serializable {
         this.senhaParaEdicao = senhaParaEdicao;
     }
 }
-

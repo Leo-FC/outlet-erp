@@ -81,4 +81,3 @@ public class LoginBean implements Serializable {
         return isUsuarioLogado() && usuarioLogado.getCategoriaUsuario() == CategoriaUsuario.ADMINISTRADOR;
     }
 }
-

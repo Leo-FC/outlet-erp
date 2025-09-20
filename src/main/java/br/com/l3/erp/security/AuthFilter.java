@@ -26,7 +26,9 @@ public class AuthFilter implements Filter {
     private static final List<String> PUBLIC_PATHS = Arrays.asList(
             "/login.xhtml",
             "/javax.faces.resource/",
-            "/publico/cadastro.xhtml"
+            "/publico/cadastro.xhtml",
+            "/publico/recuperarSenha.xhtml",
+            "/publico/redefinirSenha.xhtml"
         );
 
     
