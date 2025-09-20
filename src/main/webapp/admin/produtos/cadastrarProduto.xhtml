@@ -6,6 +6,30 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <h:head>
     <title>Cadastro de Produto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .ui-panelgrid .ui-panelgrid-cell {
+            padding: 4px 8px;
+        }
+        .button-group { 
+	        margin-top: 25px; 
+	        display: flex; 
+	        justify-content: space-around;
+	        gap: 10px; 
+        }
+        .button-group .p-button { 
+        	lex: 1; 
+        }
+    </style>
 </h:head>
 <h:body>
     <h:form id="produtoForm">
@@ -15,7 +39,7 @@
                 
                 <p:outputLabel for="nome" value="Nome do Produto:" />
                 <p:inputText id="nome" value="#{produtoBean.produto.nomeProduto}" required="true" />
-                <p:message for="nome" />
+                <span></span>
                 
                 <p:outputLabel for="categoria" value="Categoria:" />
                 <h:panelGroup layout="block">
@@ -42,7 +66,7 @@
                     <f:selectItem itemLabel="Selecione um Fornecedor" itemValue="#{null}" />
                     <f:selectItems value="#{produtoBean.fornecedoresAtivos}" var="forn" itemLabel="#{forn.razaoSocial}" itemValue="#{forn}" />
                 </p:selectOneMenu>
-                <p:message for="fornecedor" />
+                <span></span>
                 
                 <p:outputLabel for="marca" value="Marca:" />
                 <h:panelGroup layout="block">
@@ -66,13 +90,16 @@
                 
             </h:panelGrid>
             
-           <p:button value="Voltar" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" styleClass="p-button-secondary"/>
+           <p:separator style="margin-top:15px; margin-bottom:15px;" />
             
-            <p:commandButton value="Salvar Produto" 
-                             action="#{produtoBean.salvar}" 
-                             update="@form" 
-                             process="@form"
-                             style= "margin-left: 10px"/>
+           	<div class="button-group">
+           		<p:button value="Voltar" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" styleClass="ui-button-secondary"/>
+           		<p:commandButton value="Salvar Produto" 
+	                             action="#{produtoBean.salvar}" 
+	                             update="@form" 
+	                             process="@form"
+	                             style= "margin-left: 10px"/>
+            </div>
         </p:panel>
     </h:form>
 

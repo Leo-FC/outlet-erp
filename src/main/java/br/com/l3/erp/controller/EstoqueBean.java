@@ -4,14 +4,16 @@ import br.com.l3.erp.model.dao.produto.ProdutoDAO;
 import br.com.l3.erp.model.dao.estoque.EstoqueDAO;
 import br.com.l3.erp.model.entity.produto.Produto;
 import br.com.l3.erp.model.entity.estoque.Estoque;
+
 import java.io.Serializable;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped; // Importe este
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.annotation.PostConstruct;
+
 
 @Named
 @ViewScoped // Use este escopo para o popup
@@ -27,7 +29,7 @@ public class EstoqueBean implements Serializable {
 
     private List<Produto> todosProdutos;
     private List<Estoque> listaEstoque;
-    
+
     private Produto produtoSelecionado;
     private Integer quantidade;
     private Integer quantidadeMinima;
@@ -42,15 +44,15 @@ public class EstoqueBean implements Serializable {
         carregarProdutos();
         carregarEstoque();
     }
-    
+
     public void carregarProdutos() {
         todosProdutos = produtoDAO.listarProdutos();
     }
-    
+
     public void carregarEstoque() {
         listaEstoque = estoqueDAO.buscarTodos();
     }
-    
+
     public void salvarEstoque() {
         try {
             if (estoque.getIdEstoque() == null) {
@@ -190,8 +192,4 @@ public class EstoqueBean implements Serializable {
 	public void setQuantidadeMaxima(Integer quantidadeMaxima) {
 		this.quantidadeMaxima = quantidadeMaxima;
 	}
-	
-	
-    
-    
 }

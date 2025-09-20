@@ -2,37 +2,82 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+	  xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <h:head>
     <title>Cadastro de Estoque</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .ui-panelgrid .ui-panelgrid-cell {
+            padding: 4px 8px;
+        }
+        .button-group { 
+	        margin-top: 25px; 
+	        display: flex; 
+	        justify-content: space-around;
+	        gap: 10px; 
+        }
+        .button-group .p-button { 
+        	lex: 1; 
+        }
+    </style>
 </h:head>
 <h:body>
-    <h2>Cadastro de Estoque</h2>
-    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
 
-    <h:form>
-        <p:panelGrid columns="2" cellpadding="5">
-            <p:outputLabel for="produto" value="Produto:" />
-            <p:selectOneMenu id="produto" value="#{estoqueBean.produtoSelecionado}" required="true"
-                             converter="omnifaces.SelectItemsConverter">
-                <f:selectItem itemLabel="Selecione um produto" itemValue="#{null}" />
-                <f:selectItems value="#{estoqueBean.todosProdutos}" var="prod"
-                               itemLabel="#{prod.nomeProduto}" itemValue="#{prod}"/>
-            </p:selectOneMenu>
+    <h:form id="formEstoque">
+        <p:growl id="growl" showDetail="true" />
 
-            <p:outputLabel for="quantidade" value="Quantidade Inicial:" />
-            <p:inputText id="quantidade" value="#{estoqueBean.quantidade}" required="true" />
+        <p:panel header="Registrar Novo Estoque de Produto">
+            <h:panelGrid columns="2" cellpadding="5">
 
-            <p:outputLabel for="quantidadeMinima" value="Quantidade Mínima:" />
-            <p:inputText id="quantidadeMinima" value="#{estoqueBean.quantidadeMinima}" required="true" />
+                <p:outputLabel for="produto" value="Produto: " />
+                <p:selectOneMenu id="produto" value="#{estoqueBean.produtoSelecionado}" required="true"
+                                 requiredMessage="É necessário selecionar um produto."
+                                 converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="Selecione um produto" itemValue="#{null}" noSelectionOption="true"/>
+                    <f:selectItems value="#{estoqueBean.todosProdutos}" var="prod"
+                                   itemLabel="#{prod.nomeProduto}" itemValue="#{prod}"/>
+                </p:selectOneMenu>
 
-            <p:outputLabel for="quantidadeMaxima" value="Quantidade Máxima:" />
-            <p:inputText id="quantidadeMaxima" value="#{estoqueBean.quantidadeMaxima}" required="true" />
+                <p:outputLabel for="quantidade" value="Quantidade Inicial: " />
+                <p:inputNumber id="quantidade" value="#{estoqueBean.quantidade}" required="true" 
+                               requiredMessage="A quantidade inicial é obrigatória."
+                               decimalPlaces="0" thousandSeparator="" />
 
-			<p:button value="Voltar" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" styleClass="p-button-secondary"/>
-            <p:commandButton value="Salvar Estoque" action="#{estoqueBean.salvarNovoEstoquePorAtributos}" update="@form messages" />
+                <p:outputLabel for="quantidadeMinima" value="Quantidade Mínima: " />
+                <p:inputNumber id="quantidadeMinima" value="#{estoqueBean.quantidadeMinima}" required="true" 
+                               requiredMessage="A quantidade mínima é obrigatória."
+                               decimalPlaces="0" thousandSeparator="" />
+
+                <p:outputLabel for="quantidadeMaxima" value="Quantidade Máxima: " />
+                <p:inputNumber id="quantidadeMaxima" value="#{estoqueBean.quantidadeMaxima}" required="true"
+                               requiredMessage="A quantidade máxima é obrigatória."
+                               decimalPlaces="0" thousandSeparator="" />
      
-        </p:panelGrid>
+            </h:panelGrid>
+
+            <p:separator style="margin-top:15px; margin-bottom:15px;" />
+
+			<div class="button-group">
+	            <p:button value="Voltar" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" styleClass="ui-button-secondary"/>
+	            <p:commandButton value="Salvar Estoque" 
+	                             action="#{estoqueBean.salvarEstoque}" 
+	                             update="@form"
+	                             process="@form"
+	                             icon="pi pi-check" 
+	                             style="margin-left: 10px;"/>
+			</div>
+        </p:panel>
     </h:form>
+
 </h:body>
 </html>

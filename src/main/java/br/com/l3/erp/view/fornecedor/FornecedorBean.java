@@ -39,17 +39,29 @@ public class FornecedorBean implements Serializable {
     // CRUD
 
     public void salvar() {
-        if(fornecedor.getIdFornecedor() == null) {
-            fornecedorDAO.salvar(fornecedor);
-        }
-        fornecedores = null;
-        fornecedor = new Fornecedor();
+    	try {
+	        if(fornecedor.getIdFornecedor() == null) {
+	            fornecedorDAO.salvar(fornecedor);
+	        }
+	        FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Fornecedor cadastrado com sucesso!"));
+	        fornecedores = null;
+	        fornecedor = new Fornecedor();
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    		
+    		FacesContext.getCurrentInstance().addMessage(null, 
+        			new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+        					"Erro", "Não foi possível cadastrar o fornecedor"));
+    	}
     }
 
     public void salvarEdicao() {
     	if (fornecedorSelecionado != null) {
     		fornecedorDAO.atualizar(fornecedorSelecionado);
     	}
+    	FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Fornecedor atualizado com sucesso!"));
     	fornecedores = null;
     }
     
@@ -76,7 +88,8 @@ public class FornecedorBean implements Serializable {
     public void excluir(Fornecedor f) {
         fornecedorDAO.excluir(f); // exclusao logica
         listarFornecedoresComFiltros();
-        
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Fornecedor excluído com sucesso!"));
     }
     
     public void salvarFornecedorSelecionado() {

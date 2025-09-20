@@ -48,16 +48,26 @@ public class UsuarioBean implements Serializable {
 
     // Cadastro
     public void salvar() {
-        if (usuario.getId() == null) {
-        	String senhaCriptografada = PasswordEncoder.encode(usuario.getSenha());
-        	usuario.setSenha(senhaCriptografada);
-            usuarioDAO.salvar(usuario);
-            
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário cadastrado com sucesso!"));
+        try {
+        	if (usuario.getId() == null) {
+            	String senhaCriptografada = PasswordEncoder.encode(usuario.getSenha());
+            	usuario.setSenha(senhaCriptografada);
+                usuarioDAO.salvar(usuario);
+                
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário cadastrado com sucesso!"));
+            }
+            usuarios = null; // força recarregar lista
+            usuario = new Usuario(); // limpa formulário
+        } catch(Exception e) {
+    		e.printStackTrace();
+        	
+        	FacesContext.getCurrentInstance().addMessage(null, 
+        			new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+        					"Erro", "Não foi possível cadastrar o usuário"));
         }
-        usuarios = null; // força recarregar lista
-        usuario = new Usuario(); // limpa formulário
+        
+        
     }
 
     // Edição

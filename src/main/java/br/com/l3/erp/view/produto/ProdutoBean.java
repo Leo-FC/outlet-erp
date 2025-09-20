@@ -107,13 +107,26 @@ public class ProdutoBean implements Serializable {
 
     @Transactional
     public void salvar() {
-    	if(produto.getIdProduto() == null) {
-            produtoDAO.salvar(produto);
-        }else {
-        	produtoDAO.atualizar(produto);
-        }
-    	produto = null;
-        produto = new Produto();
+    	try {
+    		String mensagem = "";
+	    	if(produto.getIdProduto() == null) {
+	            produtoDAO.salvar(produto);
+	            mensagem = "cadastrado";
+	        } else {
+	        	mensagem = "atualizado";
+	        	produtoDAO.atualizar(produto);
+	        }
+	    	FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Produto " + mensagem + " com sucesso!"));
+	    	produto = null;
+	        produto = new Produto();
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    		
+    		FacesContext.getCurrentInstance().addMessage(null, 
+        			new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+        					"Erro", "Não foi possível cadastrar o produto"));
+    	}
     
     }
     
