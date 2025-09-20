@@ -1,10 +1,10 @@
 package br.com.l3.erp.controller;
 
-
 import java.io.IOException;
 import java.io.Serializable;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage; // IMPORT NECESSÁRIO
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -19,11 +19,8 @@ import br.com.l3.erp.model.entity.usuario.Usuario;
 @SessionScoped
 public class LoginBean implements Serializable {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private String email;
+    private static final long serialVersionUID = 1L;
+    private String email;
     private String senha;
     private Usuario usuarioLogado;
 
@@ -54,9 +51,21 @@ public class LoginBean implements Serializable {
                  return "/home.xhtml?faces-redirect=true";
             }
         } else {
-            // Se o usuário não for encontrado ou a senha estiver incorreta
-            // ...
-            return null;
+            // ***** INÍCIO DA CORREÇÃO *****
+
+            // Se o usuário não for encontrado ou a senha estiver incorreta,
+            // cria e exibe uma mensagem de erro.
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage mensagem = new FacesMessage(
+                FacesMessage.SEVERITY_ERROR, // Tipo da mensagem (erro)
+                "Acesso Negado",             // Título da mensagem
+                "E-mail ou senha inválidos. Por favor, verifique seus dados." // Detalhe
+            );
+            context.addMessage(null, mensagem); // Adiciona a mensagem para ser exibida pelo <p:growl>
+
+            return null; // Retorna null para permanecer na página de login
+
+            // ***** FIM DA CORREÇÃO *****
         }
     }
 

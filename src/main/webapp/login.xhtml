@@ -10,12 +10,11 @@
     <title>Página Inicial - ERP</title>
     <style>
         body{
-		    /* Garante que a imagem cubra toda a área da viewport */
 		    background-image: url("https://ordersinseconds.com/wp-content/uploads/2022/04/AdobeStock_308213916-scaled-1-scaled.webp");
-		    background-repeat: no-repeat;
-		    background-attachment: fixed; /* Mantém a imagem fixa ao rolar a página */
-		    background-size: cover; /* Faz a imagem cobrir toda a área sem distorcer */
-		    background-position: center; /* Centraliza a imagem na tela */
+		    background-repeat: no-repeat; 
+		    background-attachment: fixed; 
+		    background-size: cover; 
+		    background-position: center; 
 		}
         
         .container {
@@ -54,6 +53,11 @@
              font-size: 16px;
              border-radius: 5px;
              padding-bottom: 10px;
+             cursor: pointer;
+        }
+        
+        .botaologin:hover {
+        	opacity: 0.8;
         }
         
         .textlog{
@@ -145,6 +149,7 @@
             align-items: center;
             justify-content: fl;
             padding: 20px;
+            color: white;
         }
         
         input[type="text"], input[type="password"]{
@@ -169,12 +174,16 @@
             background-color: #1ABC9C; 
             border: none;
             color: white;
-            padding: 10px 32px;
+            padding: 10px 24px;
             text-align: center;
             text-decoration: none;
             font-size: 16px;
             border-radius: 5px;
             margin-bottom: 10px
+        }
+        
+        .logbutton:hover {
+        	opacity: 0.8;
         }
         
         .cancelbtn{
@@ -187,6 +196,11 @@
             font-size: 16px;
             border-radius: 5px;
             padding-bottom: 10px;
+        	cursor: pointer;
+        }
+        
+        .cancelbtn:hover {
+        	opacity: 0.8;
         }
         
         .fgpsw{
@@ -196,6 +210,8 @@
     </style>
 </h:head>
 <h:body>
+    <p:growl id="loginGrowl" showDetail="true" sticky="true" />
+
     <div class="container">
         <div class="fundolog">
             <div class="telalog">
@@ -217,8 +233,6 @@
                         </div>
                           
                         <div class="containerlogin">
-                            <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true"/>
-
                             <p:outputLabel for="email" value="E-mail"/>
                             <p:inputText id="email" value="#{loginBean.email}"
                                          placeholder="E-mail:" style="width:30%"
@@ -232,7 +246,7 @@
                               
                             <p:commandButton value="Login"
                                              action="#{loginBean.autenticar}"
-                                             update="@form"
+                                             update=":loginGrowl loginForm"
                                              styleClass="logbutton"/>
                               
                             <label>

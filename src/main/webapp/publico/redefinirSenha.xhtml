@@ -1,30 +1,81 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
 <h:head>
     <title>Redefinir Senha</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap');
+        
+        body {
+            background-color: #f4f6f8;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .auth-card {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .auth-title {
+            font-size: 2.2em;
+            font-weight: 600;
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .auth-subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        .ui-panelgrid .ui-grid-col-1, .ui-panelgrid .ui-grid-col-2 {
+            border: none;
+        }
+    </style>
 </h:head>
 <h:body>
+    <p:growl id="growl" showDetail="true" life="5000" />
 
-    <f:metadata>
-        <f:viewParam name="token" value="#{redefinirSenhaBean.token}" />
-    </f:metadata>
+    <div class="auth-card">
+        <h:form id="formRedefinir">
+            <h2 class="auth-title">Redefinir Senha</h2>
+            <p class="auth-subtitle">Crie uma nova senha para sua conta.</p>
+            <p:panelGrid columns="1" style="width:100%;" styleClass="ui-noborder">
+                <p:outputLabel for="novaSenha" value="Nova Senha:" />
+                <p:password id="novaSenha" 
+                            required="true"
+                            requiredMessage="O campo Nova Senha é obrigatório."
+                            feedback="true"
+                            promptLabel="Digite uma senha"
+                            weakLabel="Fraca"
+                            goodLabel="Boa"
+                            strongLabel="Forte"
+                            style="width:100%;" />
 
-    <h2>Redefinir Senha</h2>
-    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
-    
-    <h:form>
-        <h:panelGrid columns="2" cellpadding="5">
-            <p:outputLabel for="novaSenha" value="Nova Senha:" />
-            <p:password id="novaSenha" value="#{redefinirSenhaBean.novaSenha}" required="true" feedback="true" />
-
-            <p:outputLabel for="confirmarSenha" value="Confirmar Senha:" />
-            <p:password id="confirmarSenha" value="#{redefinirSenhaBean.confirmarSenha}" required="true" />
-
-            <p:commandButton value="Redefinir Senha" action="#{redefinirSenhaBean.redefinir()}" update="@form" />
-        </h:panelGrid>
-    </h:form>
+                <p:outputLabel for="confirmarSenha" value="Confirmar Senha:" style="margin-top: 15px;"/>
+                <p:password id="confirmarSenha" 
+                            required="true"
+                            requiredMessage="A confirmação de senha é obrigatória."
+                            match="novaSenha"
+                            style="width:100%;" />
+            </p:panelGrid>
+            <p:commandButton value="Redefinir Senha" 
+                             icon="pi pi-check" 
+                             action="#{authBean.redefinirSenha}"
+                             update="growl formRedefinir"
+                             style="width:100%; margin-top: 25px;"
+                             styleClass="ui-button-info" />
+        </h:form>
+    </div>
 </h:body>
 </html>
