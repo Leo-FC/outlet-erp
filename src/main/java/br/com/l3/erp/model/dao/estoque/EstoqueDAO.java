@@ -1,7 +1,6 @@
 package br.com.l3.erp.model.dao.estoque;
 
-import br.com.l3.erp.model.entity.estoque.Estoque;
-
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,8 +9,14 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 
-public class EstoqueDAO {
+import br.com.l3.erp.model.entity.estoque.Estoque;
 
+public class EstoqueDAO implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("erpPU");
 
     public void salvar(Estoque estoque) {
@@ -77,6 +82,26 @@ public class EstoqueDAO {
             // A query JPQL compara a quantidade atual com a quantidade mínima
             String jpql = "SELECT e FROM Estoque e WHERE e.quantidade < e.quantidadeMinima";
             return em.createQuery(jpql, Estoque.class).getResultList();
+        } finally {
+            em.close();
+        }
+    }
+    
+    public void remover(Long id) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            Estoque estoque = em.find(Estoque.class, id);
+            if (estoque != null) {
+                em.remove(estoque);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e;
         } finally {
             em.close();
         }

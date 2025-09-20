@@ -29,7 +29,9 @@
             <p:outputLabel for="quantidadeMaxima" value="Quantidade Máxima:" />
             <p:inputText id="quantidadeMaxima" value="#{estoqueBean.quantidadeMaxima}" required="true" />
 
-            <p:commandButton value="Salvar Estoque" action="#{estoqueBean.salvarEstoque}" update="@form messages" />
+			<p:button value="Voltar" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" styleClass="p-button-secondary"/>
+            <p:commandButton value="Salvar Estoque" action="#{estoqueBean.salvarNovoEstoquePorAtributos}" update="@form messages" />
+     
         </p:panelGrid>
     </h:form>
 </h:body>

@@ -15,6 +15,7 @@ public class Estoque implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id_estoque")
     private Long idEstoque;
 
     @OneToOne // Relação de 1 para 1 com a entidade Produto

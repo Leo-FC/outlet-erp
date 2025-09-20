@@ -1,39 +1,95 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 <h:head>
     <title>Visualizar Estoque</title>
 </h:head>
 <h:body>
-    <h2>Estoque de Produtos</h2>
-    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+    <p:growl id="messages" showDetail="true" />
     
-    <h:form>
-        <p:dataTable id="estoqueTable" var="estoque" value="#{estoqueBean.listaEstoque}"
-                     emptyMessage="Nenhum item em estoque." paginator="true" rows="10">
-            
-            <p:column headerText="ID do Estoque">
-                <h:outputText value="#{estoque.idEstoque}" />
+    <h:form id="formEstoque">
+        <p:dataTable id="dtEstoque" var="est" value="#{estoqueBean.listaEstoque}">
+            <p:column headerText="Produto">
+                <h:outputText value="#{est.produto.nomeProduto}" />
             </p:column>
             
-            <p:column headerText="Nome do Produto">
-                <h:outputText value="#{estoque.produto.nomeProduto}" />
+            <p:column headerText="Quantidade Atual">
+                <h:outputText value="#{est.quantidade}" />
             </p:column>
             
-            <p:column headerText="Quantidade">
-                <h:outputText value="#{estoque.quantidade}" />
+            <p:column headerText="Quantidade Mínima">
+                <h:outputText value="#{est.quantidadeMinima}" />
             </p:column>
             
-            <p:column headerText="Qtd. Mínima">
-                <h:outputText value="#{estoque.quantidadeMinima}" />
-            </p:column>
-            
-            <p:column headerText="Qtd. Máxima">
-                <h:outputText value="#{estoque.quantidadeMaxima}" />
+            <p:column headerText="Ações">
+                <p:commandButton icon="pi pi-pencil" 
+                                 title="Editar" 
+                                 oncomplete="PF('dlgEdicaoEstoque').show()" 
+                                 update=":formEdicao" >
+                    <f:setPropertyActionListener value="#{est}" target="#{estoqueBean.estoque}" />
+                </p:commandButton>
+                
+                <p:commandButton icon="pi pi-trash" 
+                                 title="Excluir"
+                                 oncomplete="PF('dlgConfirmacaoExclusao').show()"
+                                 update=":formConfirmacaoExclusao"
+                                 styleClass="ui-button-danger">
+                    <f:setPropertyActionListener value="#{est}" target="#{estoqueBean.estoqueParaExcluir}" />
+                </p:commandButton>
             </p:column>
         </p:dataTable>
     </h:form>
+    
+    <br/>
+    <p:button value="Voltar" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" styleClass="p-button-secondary"/>
+
+    <p:dialog header="Editar Estoque" widgetVar="dlgEdicaoEstoque" modal="true">
+        <h:form id="formEdicao">
+            <p:panelGrid columns="2">
+                <p:outputLabel for="produtoEdicao" value="Produto:" />
+                <h:outputText id="produtoEdicao" value="#{estoqueBean.estoque.produto.nomeProduto}" />
+
+                <p:outputLabel for="quantidadeEdicao" value="Quantidade:" />
+                <p:inputText id="quantidadeEdicao" value="#{estoqueBean.estoque.quantidade}" required="true" />
+
+                <p:outputLabel for="minimaEdicao" value="Qtd Mínima:" />
+                <p:inputText id="minimaEdicao" value="#{estoqueBean.estoque.quantidadeMinima}" required="true" />
+
+                <p:outputLabel for="maximaEdicao" value="Qtd Máxima:" />
+                <p:inputText id="maximaEdicao" value="#{estoqueBean.estoque.quantidadeMaxima}" required="true" />
+            </p:panelGrid>
+            
+            <p:commandButton value="Salvar" 
+                             action="#{estoqueBean.salvarEstoque}" 
+                             update=":formEstoque:dtEstoque :messages" 
+                             oncomplete="PF('dlgEdicaoEstoque').hide()" />
+            
+            <p:commandButton value="Cancelar" 
+                             type="button" 
+                             onclick="PF('dlgEdicaoEstoque').hide()" 
+                             styleClass="ui-button-flat"/>
+        </h:form>
+    </p:dialog>
+    
+    <p:dialog header="Confirmação de Exclusão" widgetVar="dlgConfirmacaoExclusao" modal="true">
+        <h:form id="formConfirmacaoExclusao">
+            <h:outputText value="Tem certeza que deseja excluir o estoque do produto: " />
+            <h:outputText value="#{estoqueBean.estoqueParaExcluir.produto.nomeProduto}" style="font-weight: bold;"/>
+            <h:outputText value="?" />
+            <br/><br/>
+            <p:commandButton value="Não" 
+                             type="button" 
+                             onclick="PF('dlgConfirmacaoExclusao').hide()" />
+            
+            <p:commandButton value="Sim"
+                             action="#{estoqueBean.confirmarExclusao}"
+                             update=":formEstoque:dtEstoque :messages"
+                             oncomplete="PF('dlgConfirmacaoExclusao').hide()"
+                             styleClass="ui-button-danger" />
+        </h:form>
+    </p:dialog>
+
 </h:body>
 </html>
