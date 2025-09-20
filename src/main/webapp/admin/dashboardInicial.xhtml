@@ -24,60 +24,92 @@
             color: #007bff;
             margin-bottom: 15px;
         }
+        .alert-estoque {
+            border: 1px solid #FFCC80; 
+            background-color: #FFF3E0; 
+            color: #E65100;
+            padding: 15px; 
+            margin-bottom: 20px; 
+            border-radius: 8px;
+            display: flex; 
+            justify-content: center;
+            align-items: center; 
+        }
+        .alert-estoque .pi { 
+	        font-size: 1.5em; 
+	        margin-right: 15px; 
+        }
+        
     </style>
 
-    <div class="dashboard-container">
-        <div style="text-align: center; margin-bottom: 40px;">
-            <h2>Bem-vindo ao Painel de Controle</h2>
-            <p>Aqui você pode gerenciar os dados essenciais do seu sistema ERP.</p>
+    <h:form id="formDashboard">
+        <div class="dashboard-container">
+            
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h2>Visão Geral do Sistema</h2>
+                <p>Acompanhe os principais indicadores em tempo real.</p>
+            </div>
+            
+            <h:panelGroup id="painelAlertaEstoque" styleClass="alert-estoque" 
+              layout="block" rendered="#{dashboardBean.alertaEstoqueVisivel}">
+                
+                <div style="display: flex; align-items: center; flex-grow: 1;">
+                    <i class="pi pi-exclamation-triangle"></i>
+                    <h:outputText value="Atenção: #{dashboardBean.produtosComEstoqueBaixo.size()} produto(s) estão com o estoque abaixo do mínimo!" 
+                                  style="font-weight: bold;"/>
+                </div>
+                
+                <p:commandButton value="Ver Detalhes" icon="pi pi-search"
+                                 type="button" 
+                                 onclick="PF('dialogEstoqueBaixo').show()"
+                                 styleClass="ui-button-warning" />
+                                 
+            </h:panelGroup>
+
+            <div class="card-container">
+                 <p:card styleClass="dashboard-card">
+                    <f:facet name="title">Usuários Cadastrados</f:facet>
+                    <f:facet name="subtitle">#{dashboardBean.totalUsuarios}</f:facet>
+                    <i class="pi pi-users card-icon"></i>
+                    <p>Total de usuários no sistema.</p>
+                </p:card>
+                <p:card styleClass="dashboard-card">
+                    <f:facet name="title">Produtos Ativos</f:facet>
+                    <f:facet name="subtitle">#{dashboardBean.totalProdutos}</f:facet>
+                    <i class="pi pi-box card-icon"></i>
+                    <p>Itens disponíveis no catálogo.</p>
+                </p:card>
+                <p:card styleClass="dashboard-card">
+                    <f:facet name="title">Fornecedores</f:facet>
+                    <f:facet name="subtitle">#{dashboardBean.totalFornecedores}</f:facet>
+                    <i class="pi pi-truck card-icon"></i>
+                    <p>Parceiros e fornecedores registrados.</p>
+                </p:card>
+            </div>
+
+            <p:panel header="Análise de Desempenho" style="margin-top: 40px;">
+                <p style="text-align: center; color: #888;">
+                    Gráficos e relatórios serão exibidos aqui em breve.
+                </p>
+            </p:panel>
         </div>
+    </h:form>
 
-        <div class="card-container">
-
-            <p:card styleClass="dashboard-card">
-                <f:facet name="title">
-                    Usuários Cadastrados
-                </f:facet>
-                <f:facet name="subtitle">
-                    15
-                </f:facet>
-                
-                <i class="pi pi-users card-icon"></i>
-                <p>Total de usuários no sistema.</p>
-            </p:card>
-
-            <p:card styleClass="dashboard-card">
-                <f:facet name="title">
-                    Produtos Ativos
-                </f:facet>
-                <f:facet name="subtitle">
-                    250
-                </f:facet>
-                
-                <i class="pi pi-box card-icon"></i>
-                <p>Itens disponíveis no catálogo.</p>
-            </p:card>
-
-            <p:card styleClass="dashboard-card">
-                <f:facet name="title">
-                    Fornecedores
-                </f:facet>
-                <f:facet name="subtitle">
-                    42
-                </f:facet>
-                
-                <i class="pi pi-truck card-icon"></i>
-                <p>Parceiros e fornecedores registrados.</p>
-            </p:card>
-
-        </div>
-
-        <p:panel header="Visão Geral de Vendas" style="margin-top: 40px;">
-            <p style="text-align: center; color: #888;">
-                Gráficos e relatórios serão exibidos aqui em breve.
-            </p>
-        </p:panel>
-
-    </div>
-
+    <p:dialog header="Produtos com Estoque Baixo" widgetVar="dialogEstoqueBaixo"
+              modal="true" responsive="true" width="600"
+              appendTo="@(body)">
+              
+        <p:dataTable var="item" value="#{dashboardBean.produtosComEstoqueBaixo}"
+                     emptyMessage="Todos os produtos estão com o estoque em dia.">
+            <p:column headerText="Produto">
+                <h:outputText value="#{item.produto.nomeProduto}" />
+            </p:column>
+            <p:column headerText="Qtd. Atual" style="text-align: center;">
+                <h:outputText value="#{item.quantidade}" style="font-weight: bold; color: red;" />
+            </p:column>
+            <p:column headerText="Qtd. Mínima" style="text-align: center;">
+                <h:outputText value="#{item.quantidadeMinima}" />
+            </p:column>
+        </p:dataTable>
+    </p:dialog>
 </ui:composition>

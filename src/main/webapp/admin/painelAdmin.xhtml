@@ -20,17 +20,20 @@
     		box-sizing: border-box; 
     	}
     	
+    	html, body {
+            height: 100%;
+        }
+    	
         body {
             background-color: var(--primary-color);
             color: var(--text-color);
             font-family: Arial, sans-serif;
-            height: 100vh;
         }
         
         .container {
         	display: flex;
         	flex-direction: row;
-        	height: 100%;
+        	min-height: 100vh;
         }
         
         .navbar {
@@ -40,7 +43,7 @@
             flex-shrink: 0;
             background-color: var(--secondary-color);
             width: 220px;
-            padding: 15px;,
+            padding: 15px;
         }
         
         .avatar{
@@ -57,7 +60,6 @@
         	flex-direction: column;
         	flex: 1;	
         	border-bottom: 1px solid var(--secondary-color);
-        	overflow: hidden;
        	}
        	
        	.painel h1 {
@@ -104,7 +106,7 @@
                                  styleClass="p-button-raised p-button-rounded p-button-info" 
                                  style="width: 100%; margin-bottom: 10px;"/>
                                  
-                <p:commandButton value="Estoque" icon="pi pi-warehouse"
+                <p:commandButton value="Estoque" icon="pi pi-table"
 				                 actionListener="#{painelAdminBean.navegarPara('/admin/estoque/gerenciarEstoque.xhtml')}"
 				                 update=":formPainel:dashboardContent"
 				                 styleClass="p-button-raised p-button-rounded p-button-info" 

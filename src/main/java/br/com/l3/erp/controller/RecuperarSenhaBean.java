@@ -15,6 +15,8 @@ import br.com.l3.erp.model.dao.usuario.UsuarioDAO;
 import br.com.l3.erp.model.entity.usuario.Usuario;
 import br.com.l3.erp.service.EmailService;
 
+
+
 @Named
 @ViewScoped
 public class RecuperarSenhaBean implements Serializable {

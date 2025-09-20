@@ -8,7 +8,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import br.com.l3.erp.model.entity.fornecedor.Fornecedor;
@@ -66,6 +68,18 @@ public class ProdutoDAO implements Serializable {
     	}finally {
     		em.close();
     	}
+    }
+    
+    public long countTotal() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Produto p", Long.class);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return 0; // Retorna 0 se a tabela estiver vazia
+        } finally {
+            em.close();
+        }
     }
     
     public List<Produto> listarProdutos() {

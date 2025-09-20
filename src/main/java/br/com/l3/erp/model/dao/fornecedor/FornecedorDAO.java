@@ -1,16 +1,17 @@
 package br.com.l3.erp.model.dao.fornecedor;
 
-import br.com.l3.erp.model.entity.fornecedor.Fornecedor;
+import java.io.Serializable;
+import java.util.List;
 
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
-import java.io.Serializable;
-import java.util.List;
+import br.com.l3.erp.model.entity.fornecedor.Fornecedor;
 
 @Named
 public class FornecedorDAO implements Serializable{
@@ -61,6 +62,18 @@ public class FornecedorDAO implements Serializable{
     	}finally {
     		em.close();
     	}
+    }
+    
+    public long countTotal() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(f) FROM Fornecedor f", Long.class);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return 0; // Retorna 0 se a tabela estiver vazia
+        } finally {
+            em.close();
+        }
     }
 
     public Fornecedor buscarPorId(Long idFornecedor) {

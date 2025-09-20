@@ -83,6 +83,18 @@ public class UsuarioDAO {
             em.close();
         }
     }
+    
+    public long countTotal() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(u) FROM Usuario u", Long.class);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return 0; // Retorna 0 se a tabela estiver vazia
+        } finally {
+            em.close();
+        }
+    }
 
     public Usuario buscarPorId(Long id) {
         EntityManager em = getEntityManager();

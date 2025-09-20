@@ -70,6 +70,17 @@ public class EstoqueDAO {
             em.close();
         }
     }
+    
+    public List<Estoque> buscarProdutosComEstoqueBaixo() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            // A query JPQL compara a quantidade atual com a quantidade mínima
+            String jpql = "SELECT e FROM Estoque e WHERE e.quantidade < e.quantidadeMinima";
+            return em.createQuery(jpql, Estoque.class).getResultList();
+        } finally {
+            em.close();
+        }
+    }
 
     
 }
