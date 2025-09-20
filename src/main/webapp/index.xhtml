@@ -48,6 +48,7 @@
 			 font-size: 16px;
 			 border-radius: 5px;
 			 padding-bottom: 10px;
+			 cursor: pointer;
 		}
 		
 		.textlog{
@@ -190,54 +191,71 @@
 	</style>
 </h:head>
 <h:body>
-	<div class="container">
-			<div class="fundolog">
-				<div class="telalog">
-					<h1 class="textlog"> Acesso ao Sistema </h1>
-		     
-			     <button class="botaologin" onclick="document.getElementById('id01').style.display='inline-block'">Faça seu Login</button>
-				 <P style="color: white; font-family: monospace;"> Coloque seus dados fornecidos pelo administrador </P>
-				 <div id="id01" class="modal">
-				     	<span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&#215;</span>
-				     
-				     <form class="modal-content animate" action="/action_page.php">
-				     	<div class="containerimg">
-				     		<img src="https://static.vecteezy.com/ti/vetor-gratis/p1/11209565-avatar-do-perfil-do-usuario-gratis-vetor.jpg" alt="Avatar" class="avatar"></img>
-				     	</div>
-				     	
-						<div class="containerlogin">
-							<label for="uname"><b>E-mail</b></label>
-							<input type="text" placeholder="E-mail:" name="uname"></input>
-							
-							<label for="psw"><b>Senha</b></label>
-							<input type="password" placeholder="Senha:" name="psw"></input>
-							
-							<button class="logbutton" type="submit">Login</button>
-							<label for="remember">
-								<input type="checkbox" checked="checked" name="remember"></input> 
-								<a style="color: white; font-family: monospace;">Lembrar de mim</a>
-							</label> <!-- Talvez eu vá tirar isso -->
-						</div>
-						
-						<div class="containerlogin">
-							<span class="fgpsw"><a style="color: #7FB3D5;" href="#">Esqueceu a senha?</a></span>
-							<button type="button" onclick="document.getElementById.style.display='none'" class="cancelbtn" >Cancel</button>
-						</div>
-				     </form>
-				 </div>
-				 <br></br>
-				 <br></br>
-				 <h:form>
-		       			<p:commandButton class="paineladmbutton" value="Painel Administrador" 
-		                        		icon="pi pi-user-plus" 
-		                        		action="admin/painelAdmin.xhtml?faces-redirect=true" />
-		       			<br/><br/>
-		
-		       			<h:outputText class="textofinal" value="Selecione uma opção acima para começar." />       
-		
-		    	</h:form>
-			 </div>
-		 </div>
-	</div>
+    <div class="container">
+        <div class="fundolog">
+            <div class="telalog">
+                <h1 class="textlog"> Acesso ao Sistema </h1>
+         
+                
+                <button class="botaologin" onclick="document.getElementById('id01').style.display='inline-block'">
+                    Faça seu Login
+                </button>
+                <p style="color: white; font-family: monospace;">Coloque seus dados fornecidos pelo administrador</p>
+
+                
+                <div id="id01" class="modal">
+                    <span onclick="document.getElementById('id01').style.display='none'" 
+                          class="close" title="Close Modal">&#215;</span>
+                     
+                    
+                    <h:form class="modal-content animate">
+                        <div class="containerimg">
+                            <img src="https://static.vecteezy.com/ti/vetor-gratis/p1/11209565-avatar-do-perfil-do-usuario-gratis-vetor.jpg" 
+                                 alt="Avatar" class="avatar"/>
+                        </div>
+                        
+                        <div class="containerlogin">
+                            <label for="email"><b>E-mail</b></label>
+                            <p:inputText id="email" value="#{loginBean.email}" 
+                                         placeholder="E-mail:" style="width:30%"/>
+                            
+                            <label for="senha"><b>Senha</b></label>
+                            <p:password id="senha" value="#{loginBean.senha}" 
+                                        placeholder="Senha:" style="width:30%"/>
+                            
+                            <p:commandButton value="Login" 
+                                             action="#{loginBean.logar}" 
+                                             styleClass="logbutton"/>
+                            
+                            <label>
+                                <input type="checkbox" checked="checked" name="remember"/> 
+                                <span style="color:white;font-family:monospace;">Lembrar de mim</span>
+                            </label>
+                        </div>
+                        
+                        <div class="containerlogin">
+                            <span class="fgpsw">
+                                <a style="color: #7FB3D5;" href="#">Esqueceu a senha?</a>
+                            </span>
+                            <button type="button" 
+                                    onclick="document.getElementById('id01').style.display='none'" 
+                                    class="cancelbtn">Cancel</button>
+                        </div>
+                    </h:form>
+                </div>
+
+                <br/><br/>
+
+                
+                <h:form>
+                    <p:commandButton class="paineladmbutton" value="Painel Administrador" 
+                                     icon="pi pi-user-plus" 
+                                     action="admin/painelAdmin.xhtml?faces-redirect=true" />
+                </h:form>
+
+                <h:outputText class="textofinal" value="Selecione uma opção acima para começar."/>       
+            </div>
+        </div>
+    </div>
 </h:body>
 </html>

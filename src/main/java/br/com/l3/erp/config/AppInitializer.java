@@ -17,7 +17,7 @@ public class AppInitializer implements ServletContextListener {
 
         // O CAMINHO DO ARQUIVO DE PROPRIEDADES É CRÍTICO
         // Use o caminho absoluto para o arquivo database.properties no seu servidor
-        String configPath = "C:\\Java\\Java 11\\Projetos Java 11\\erp-varejo-v7\\database.properties"; // <-- **ATENÇÃO AQUI** COLOCAR O CAMINHO ABSOLUTO
+        String configPath = "C:\\Java\\Projetos Java 11\\erp-varejo-v6.1\\erp-varejo-v6\\database.properties"; // <-- **ATENÇÃO AQUI** COLOCAR O CAMINHO ABSOLUTO
 
         try (InputStream input = new FileInputStream(configPath)) {
             Properties prop = new Properties();
