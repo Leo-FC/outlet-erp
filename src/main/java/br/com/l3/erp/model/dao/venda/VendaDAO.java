@@ -18,6 +18,7 @@ public class VendaDAO implements Serializable {
 
     private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("erpPU");
 
+    
     public Venda salvar(Venda venda) {
         EntityManager em = emf.createEntityManager();
         if (venda.getIdVenda() == null) {
@@ -37,5 +38,11 @@ public class VendaDAO implements Serializable {
         } finally {
             em.close();
         }
+    }
+    
+    public List<Venda> listarTodos() {
+        EntityManager em = emf.createEntityManager();
+
+        return em.createQuery("SELECT v FROM Venda v", Venda.class).getResultList();
     }
 }

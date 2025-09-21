@@ -3,6 +3,8 @@ package br.com.l3.erp.model.entity.venda;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +21,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import br.com.l3.erp.model.entity.usuario.Usuario;
 
@@ -46,10 +52,12 @@ public class Venda implements Serializable {
     private List<ItemVenda> itensVenda;
     
     @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "id_cliente", nullable = false)
     private Usuario cliente;
     
     @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "id_vendedor", nullable = false)
     private Usuario vendedor;
 
@@ -124,6 +132,13 @@ public class Venda implements Serializable {
 	public void setVendedor(Usuario vendedor) {
 		this.vendedor = vendedor;
 	}
+	
+    public Date getDataVendaDate() {
+        if (dataVenda != null) {
+            return Date.from(dataVenda.atZone(ZoneId.of("America/Sao_Paulo")).toInstant());
+        }
+        return null;
+    }
 
 	// hashCode e equals
     @Override

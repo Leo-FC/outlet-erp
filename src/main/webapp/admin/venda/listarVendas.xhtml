@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:o="http://omnifaces.org/ui">
+<h:head>
+    <title>Lista de Vendas</title>
+</h:head>
+<h:body>
+    <h2>Vendas Realizadas</h2>
+    <h:form>
+        <p:dataTable id="vendasTable"
+                     var="venda"
+                     value="#{listarVendasBean.todasVendas}"
+                     paginator="true"
+                     rows="10"
+                     emptyMessage="Nenhuma venda encontrada.">
+
+            <p:column headerText="ID da Venda">
+                <h:outputText value="#{venda.idVenda}" />
+            </p:column>
+            
+            <p:column headerText="Cliente" filterBy="#{venda.cliente.nomeCompleto}" filterMatchMode="contains">
+                <h:outputText value="#{venda.cliente != null ? venda.cliente.nomeCompleto : 'Cliente não identificado'}" />
+            </p:column>
+            
+            <p:column headerText="Vendedor" filterBy="#{venda.vendedor.nomeCompleto}" filterMatchMode="contains">
+                <h:outputText value="#{venda.vendedor != null ? venda.vendedor.nomeCompleto : 'Vendedor Desconhecido'}" />
+            </p:column>
+            
+            <p:column headerText="Data">
+                <h:outputText value="#{venda.dataVendaDate}">
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo"/>
+                </h:outputText>
+            </p:column>
+            
+            <p:column headerText="Valor Total">
+                <h:outputText value="#{venda.valorTotal}">
+                    <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR" />
+                </h:outputText>
+            </p:column>
+            
+            <p:column headerText="Forma de Pagamento">
+                <f:facet name="filter">
+                    <p:selectOneMenu onchange="PF('vendasTable').filter()" style="width:100%">
+                        <f:selectItem itemLabel="Todos" itemValue="" />
+                        <f:selectItems value="#{listarVendasBean.formasPagamento}" />
+                    </p:selectOneMenu>
+                </f:facet>
+                <h:outputText value="#{venda.formaPagamento}" />
+            </p:column>
+            
+        </p:dataTable>
+        
+        <p:button value="Voltar para o Painel" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" style="margin-top: 15px;"/>
+    </h:form>
+</h:body>
+</html>
