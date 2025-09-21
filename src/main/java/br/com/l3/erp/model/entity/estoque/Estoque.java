@@ -1,8 +1,17 @@
 package br.com.l3.erp.model.entity.estoque;
 
-import br.com.l3.erp.model.entity.produto.Produto;
-import javax.persistence.*;
 import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import br.com.l3.erp.model.entity.produto.Produto;
 
 @Entity
 @Table(name = "estoque")
@@ -29,6 +38,7 @@ public class Estoque implements Serializable {
 
     @Column(name = "quantidade_maxima")
     private Integer quantidadeMaxima;
+    
 
 	public Long getIdEstoque() {
 		return idEstoque;

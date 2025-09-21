@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Ponto de Venda</title>
+</h:head>
+<h:body>
+    <h2>Ponto de Venda</h2>
+    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+
+    <h:form id="vendaForm">
+        <p:panel header="Adicionar Produtos" style="margin-bottom: 20px;">
+            <p:panelGrid columns="3" layout="grid">
+                
+                <p:outputLabel for="produto" value="Produto:" />
+                
+                <h:panelGroup>
+                    <p:selectOneMenu id="produto" value="#{vendaBean.produtoSelecionado}" required="true"
+                                     converter="omnifaces.SelectItemsConverter">
+                        <f:selectItem itemLabel="Selecione um produto" itemValue="#{null}" />
+                        <f:selectItems value="#{vendaBean.todosProdutos}" var="prod"
+                                       itemLabel="#{prod.nomeProduto}" itemValue="#{prod}"/>
+                        <p:ajax update="messages" />
+                    </p:selectOneMenu>
+                    
+                    <p:commandButton 
+                        id="btnPesquisar"
+                        value="Pesquisar" 
+                        type="button" 
+                        icon="pi pi-search"
+                        onclick="PF('dlgProdutos').show()"
+                        style="margin-left: 5px;"/>
+                </h:panelGroup>
+                
+                <h:panelGroup />
+                
+                <p:outputLabel for="quantidade" value="Quantidade:" />
+                <p:inputText id="quantidade" value="#{vendaBean.quantidadeSelecionada}" required="true" />
+                <p:commandButton value="Adicionar" 
+                                 action="#{vendaBean.adicionarItem}" 
+                                 update="@form messages"
+                                 process="produto quantidade @this" />
+            </p:panelGrid>
+        </p:panel>
+        
+        <p:panel header="Carrinho de Compras" style="margin-bottom: 20px;">
+            <p:dataTable id="carrinho" var="item" value="#{vendaBean.carrinhoDeCompras}" emptyMessage="O carrinho está vazio.">
+                <p:column headerText="Produto">
+                    <h:outputText value="#{item.produto.nomeProduto}" />
+                </p:column>
+                
+                <p:column headerText="Quantidade">
+                    <h:outputText value="#{item.quantidade}" />
+                </p:column>
+                
+                <p:column headerText="Preço Unitário">
+                    <h:outputText value="#{item.valorUnitario}">
+                         <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR" />
+                    </h:outputText>
+                </p:column>
+                
+                <p:column headerText="Total do Item">
+                    <h:outputText value="#{item.valorTotal}">
+                         <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR" />
+                    </h:outputText>
+                </p:column>
+                
+                <p:column headerText="Ações" width="50">
+                    <p:commandButton icon="pi pi-times" title="Remover" action="#{vendaBean.removerItem(item)}" update="carrinho messages" process="@this" />
+                </p:column>
+                
+                <f:facet name="footer">
+                    Total: <h:outputText value="#{vendaBean.venda.valorTotal}">
+                         <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR" />
+                    </h:outputText>
+                </f:facet>
+            </p:dataTable>
+        </p:panel>
+        
+        <p:panel header="Finalizar Venda" style="margin-bottom: 20px;">
+            <p:panelGrid columns="2">
+                 <p:outputLabel for="cliente" value="Cliente:" />
+                 <h:panelGroup>
+                     <p:selectOneMenu id="cliente" value="#{vendaBean.clienteSelecionado}"
+                                      converter="omnifaces.SelectItemsConverter">
+                         <f:selectItem itemLabel="Selecione um cliente" itemValue="#{null}" />
+                         <f:selectItems value="#{vendaBean.todosClientes}" var="cli"
+                                        itemLabel="#{cli.nomeCompleto}" itemValue="#{cli}"/>
+                         <p:ajax update="messages" />
+                     </p:selectOneMenu>
+                     
+                     <p:commandButton 
+                         id="btnPesquisarCliente"
+                         value="Pesquisar" 
+                         type="button" 
+                         icon="pi pi-search"
+                         onclick="PF('dlgClientes').show()"
+                         style="margin-left: 5px;" />
+                 </h:panelGroup>
+
+                 <p:outputLabel for="formaPagamento" value="Forma de Pagamento:" />
+                 <p:selectOneMenu id="formaPagamento" value="#{vendaBean.formaPagamentoSelecionada}" required="true">
+                     <f:selectItems value="#{vendaBean.formasDePagamento}" var="fp" itemLabel="#{fp}" itemValue="#{fp}" />
+                 </p:selectOneMenu>
+            </p:panelGrid>
+            
+            <p:commandButton value="Finalizar Venda" 
+                             action="#{vendaBean.finalizarVenda}" 
+                             actionListener="#{vendaBean.gerarRecibo}"
+                             oncomplete="PF('dialogoRecibo').show()"
+                             update="@form"
+                             process="formaPagamento cliente @this"
+                             style="margin-top: 10px;"/>
+        </p:panel>
+        
+        <p:button value="Voltar para o Painel" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" style="margin-top: 10px;"/>
+    </h:form>
+    
+    <p:dialog 
+        header="Pesquisar Produto" 
+        widgetVar="dlgProdutos" 
+        modal="true" 
+        showEffect="fade" 
+        hideEffect="fade" 
+        resizable="false"
+        width="800">
+        
+        <h:form id="dlgProdutoForm">
+            <p:dataTable 
+                id="produtosTable"
+                value="#{vendaBean.todosProdutos}" 
+                var="produto" 
+                widgetVar="produtosTable" 
+                paginator="true" 
+                rows="10"
+                emptyMessage="Nenhum produto encontrado.">
+                
+                <f:facet name="header">
+                    <p:inputText id="globalFilter" onkeyup="PF('produtosTable').filter()" placeholder="Pesquisar..."/>
+                </f:facet>
+                
+                <p:column headerText="Código" filterBy="#{produto.idProduto}" sortBy="#{produto.idProduto}">
+                    <h:outputText value="#{produto.idProduto}" />
+                </p:column>
+                
+                <p:column headerText="Nome" filterBy="#{produto.nomeProduto}" sortBy="#{produto.nomeProduto}">
+                    <h:outputText value="#{produto.nomeProduto}" />
+                </p:column>
+                
+                <p:column headerText="Preço" filterBy="#{produto.preco}" sortBy="#{produto.preco}">
+                    <h:outputText value="#{produto.preco}">
+                        <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Ação" style="width: 80px; text-align: center;">
+                    <p:commandButton value="Selecionar" 
+                                     oncomplete="PF('dlgProdutos').hide()" 
+                                     action="#{vendaBean.selecionarProduto(produto)}"
+                                     update=":vendaForm" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:dialog>
+    
+    <p:dialog 
+        header="Pesquisar Cliente" 
+        widgetVar="dlgClientes" 
+        modal="true" 
+        showEffect="fade" 
+        hideEffect="fade" 
+        resizable="false"
+        width="800">
+        
+        <h:form id="dlgClienteForm">
+            <p:dataTable 
+                id="clientesTable"
+                value="#{vendaBean.todosClientes}" 
+                var="cliente" 
+                widgetVar="clientesTable" 
+                paginator="true" 
+                rows="10"
+                emptyMessage="Nenhum cliente encontrado.">
+                
+                <f:facet name="header">
+                    <p:inputText id="globalFilter" onkeyup="PF('clientesTable').filter()" placeholder="Pesquisar..."/>
+                </f:facet>
+                
+                <p:column headerText="Código" filterBy="#{cliente.id}" sortBy="#{cliente.id}">
+                    <h:outputText value="#{cliente.id}" />
+                </p:column>
+                
+                <p:column headerText="Nome" filterBy="#{cliente.nomeCompleto}" sortBy="#{cliente.nomeCompleto}">
+                    <h:outputText value="#{cliente.nomeCompleto}" />
+                </p:column>
+                
+                <p:column headerText="CPF" filterBy="#{cliente.cpf}" sortBy="#{cliente.cpf}">
+                    <h:outputText value="#{cliente.cpf}" />
+                </p:column>
+
+                <p:column headerText="Ação" style="width: 80px; text-align: center;">
+                    <p:commandButton value="Selecionar" 
+                                     oncomplete="PF('dlgClientes').hide()" 
+                                     action="#{vendaBean.selecionarCliente(cliente)}"
+                                     update=":vendaForm" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:dialog>
+    
+	<p:dialog header="Recibo de Venda" widgetVar="dialogoRecibo" modal="true">
+	    <h:form>
+	        <h:outputText value="Venda finalizada com sucesso! O que você gostaria de fazer com o recibo?" style="font-weight: bold;"/>
+	        <p:panelGrid columns="2" style="margin-top:20px;">
+	            <p:commandButton value="Baixar Recibo" styleClass="ui-button-success" ajax="false">
+	                <p:fileDownload value="#{vendaBean.recibo}" />
+	            </p:commandButton>
+	            <p:commandButton value="Visualizar Recibo" styleClass="ui-button-info" ajax="false">
+	                <p:fileDownload value="#{vendaBean.recibo}" />
+	            </p:commandButton>
+	        </p:panelGrid>
+	        <p:commandButton value="Fechar" onclick="PF('dialogoRecibo').hide()" style="margin-top: 10px;"/>
+	    </h:form>
+	</p:dialog>
+</h:body>
+</html>

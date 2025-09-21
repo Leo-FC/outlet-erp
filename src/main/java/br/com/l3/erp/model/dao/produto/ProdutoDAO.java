@@ -116,4 +116,10 @@ public class ProdutoDAO implements Serializable {
     	}
         
     }
+    
+    public List<Produto> buscarProdutosComEstoque() {
+    	EntityManager em = emf.createEntityManager();
+    	String jpql = "SELECT p FROM Produto p LEFT JOIN p.estoque e WHERE e.quantidade > 0";
+        return em.createQuery(jpql, Produto.class).getResultList();
+    }
 }

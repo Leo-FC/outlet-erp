@@ -14,6 +14,8 @@
         <class>br.com.l3.erp.model.entity.produto.Produto</class>
         <class>br.com.l3.erp.model.entity.produto.marca.Marca</class>
         <class>br.com.l3.erp.model.entity.estoque.Estoque</class>
+        <class>br.com.l3.erp.model.entity.venda.Venda</class>
+        <class>br.com.l3.erp.model.entity.venda.ItemVenda</class>
         
         
 

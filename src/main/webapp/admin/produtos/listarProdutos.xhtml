@@ -23,6 +23,12 @@
                     <h:outputText value="#{produto.nomeProduto}" />
                 </p:column>
                 
+                <p:column headerText="Preço">
+                    <h:outputText value="#{produto.preco}">
+                         <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR" />
+                    </h:outputText>
+                </p:column>
+                
                 <p:column headerText="Categoria" filterBy="#{produto.categoria.nomeRoupa}">
                     <h:outputText value="#{produto.categoria.nomeRoupa}" />
                 </p:column>

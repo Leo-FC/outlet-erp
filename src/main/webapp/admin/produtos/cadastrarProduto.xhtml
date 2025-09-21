@@ -41,6 +41,15 @@
                 <p:inputText id="nome" value="#{produtoBean.produto.nomeProduto}" required="true" />
                 <span></span>
                 
+                <p:outputLabel for="preco" value="Preço:" />
+                <p:inputNumber id="preco" 
+                               value="#{produtoBean.produto.preco}" 
+                               required="true" 
+                               symbol="R$" 
+                               symbolPosition="p" 
+                               decimalPlaces="2" />
+                <span></span>
+                
                 <p:outputLabel for="categoria" value="Categoria:" />
                 <h:panelGroup layout="block">
                     <p:selectOneMenu id="categoria" value="#{produtoBean.produto.categoria}" converter="omnifaces.SelectItemsConverter" required="true">

@@ -205,4 +205,13 @@ public class UsuarioDAO {
             em.close();
         }
     }
+    
+    public List<Usuario> buscarClientes() {
+        EntityManager em = getEntityManager();
+
+        String jpql = "SELECT u FROM Usuario u WHERE u.categoriaUsuario = :categoria AND u.ativo = true";
+        return em.createQuery(jpql, Usuario.class)
+                 .setParameter("categoria", CategoriaUsuario.CLIENTE)
+                 .getResultList();
+    }
 }

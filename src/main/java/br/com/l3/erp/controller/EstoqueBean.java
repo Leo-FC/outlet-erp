@@ -75,14 +75,21 @@ public class EstoqueBean implements Serializable {
     
     public void salvarNovoEstoquePorAtributos() {
         try {
+            // 1. Crie o objeto Estoque com os dados do formulário
             Estoque novoEstoque = new Estoque();
-            novoEstoque.setProduto(produtoSelecionado);
             novoEstoque.setQuantidade(quantidade);
             novoEstoque.setQuantidadeMinima(quantidadeMinima);
             novoEstoque.setQuantidadeMaxima(quantidadeMaxima);
             
-            estoqueDAO.salvar(novoEstoque);
-            
+            // 2. Associe o novo estoque ao produto selecionado
+            // A associação bidirecional é crucial!
+            novoEstoque.setProduto(produtoSelecionado);
+            produtoSelecionado.setEstoque(novoEstoque);
+
+            // 3. Salve/atualize o Produto. O Hibernate irá salvar o Estoque em cascata.
+            // Chame o método de atualizar/merge do ProdutoDAO
+            produtoDAO.atualizar(produtoSelecionado);
+
             // Limpa os campos do formulário
             this.produtoSelecionado = null;
             this.quantidade = null;
