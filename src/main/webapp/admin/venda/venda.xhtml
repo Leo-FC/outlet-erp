@@ -4,118 +4,134 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 <h:head>
-    <title>Ponto de Venda</title>
+    <title>Ponto de Venda - Outshop</title>
+    <style type="text/css">
+        body {
+            background-color: #f4f6f8;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .venda-container {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+        .coluna-esquerda {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .coluna-direita {
+            flex: 1;
+        }
+        .ui-panel .ui-panel-content {
+             padding: 1.25rem;
+        }
+    </style>
 </h:head>
 <h:body>
-    <h2>Ponto de Venda</h2>
-    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
-
+    <p:growl id="messages" showDetail="true" />
+    
     <h:form id="vendaForm">
-        <p:panel header="Adicionar Produtos" style="margin-bottom: 20px;">
-            <p:panelGrid columns="3" layout="grid">
-                
-                <p:outputLabel for="produto" value="Produto:" />
-                
-                <h:panelGroup>
-                    <p:selectOneMenu id="produto" value="#{vendaBean.produtoSelecionado}" required="true"
-                                     converter="omnifaces.SelectItemsConverter">
-                        <f:selectItem itemLabel="Selecione um produto" itemValue="#{null}" />
-                        <f:selectItems value="#{vendaBean.todosProdutos}" var="prod"
-                                       itemLabel="#{prod.nomeProduto}" itemValue="#{prod}"/>
-                        <p:ajax update="messages" />
-                    </p:selectOneMenu>
-                    
-                    <p:commandButton 
-                        id="btnPesquisar"
-                        value="Pesquisar" 
-                        type="button" 
-                        icon="pi pi-search"
-                        onclick="PF('dlgProdutos').show()"
-                        style="margin-left: 5px;"/>
-                </h:panelGroup>
-                
-                <h:panelGroup />
-                
-                <p:outputLabel for="quantidade" value="Quantidade:" />
-                <p:inputText id="quantidade" value="#{vendaBean.quantidadeSelecionada}" required="true" />
-                <p:commandButton value="Adicionar" 
-                                 action="#{vendaBean.adicionarItem}" 
-                                 update="@form messages"
-                                 process="produto quantidade @this" />
-            </p:panelGrid>
-        </p:panel>
-        
-        <p:panel header="Carrinho de Compras" style="margin-bottom: 20px;">
-            <p:dataTable id="carrinho" var="item" value="#{vendaBean.carrinhoDeCompras}" emptyMessage="O carrinho está vazio.">
-                <p:column headerText="Produto">
-                    <h:outputText value="#{item.produto.nomeProduto}" />
-                </p:column>
-                
-                <p:column headerText="Quantidade">
-                    <h:outputText value="#{item.quantidade}" />
-                </p:column>
-                
-                <p:column headerText="Preço Unitário">
-                    <h:outputText value="#{item.valorUnitario}">
-                         <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR" />
-                    </h:outputText>
-                </p:column>
-                
-                <p:column headerText="Total do Item">
-                    <h:outputText value="#{item.valorTotal}">
-                         <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR" />
-                    </h:outputText>
-                </p:column>
-                
-                <p:column headerText="Ações" width="50">
-                    <p:commandButton icon="pi pi-times" title="Remover" action="#{vendaBean.removerItem(item)}" update="carrinho messages" process="@this" />
-                </p:column>
-                
-                <f:facet name="footer">
-                    Total: <h:outputText value="#{vendaBean.venda.valorTotal}">
-                         <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR" />
-                    </h:outputText>
-                </f:facet>
-            </p:dataTable>
-        </p:panel>
-        
-        <p:panel header="Finalizar Venda" style="margin-bottom: 20px;">
-            <p:panelGrid columns="2">
-                 <p:outputLabel for="cliente" value="Cliente:" />
-                 <h:panelGroup>
-                     <p:selectOneMenu id="cliente" value="#{vendaBean.clienteSelecionado}"
-                                      converter="omnifaces.SelectItemsConverter">
-                         <f:selectItem itemLabel="Selecione um cliente" itemValue="#{null}" />
-                         <f:selectItems value="#{vendaBean.todosClientes}" var="cli"
-                                        itemLabel="#{cli.nomeCompleto}" itemValue="#{cli}"/>
-                         <p:ajax update="messages" />
-                     </p:selectOneMenu>
-                     
-                     <p:commandButton 
-                         id="btnPesquisarCliente"
-                         value="Pesquisar" 
-                         type="button" 
-                         icon="pi pi-search"
-                         onclick="PF('dlgClientes').show()"
-                         style="margin-left: 5px;" />
-                 </h:panelGroup>
-
-                 <p:outputLabel for="formaPagamento" value="Forma de Pagamento:" />
-                 <p:selectOneMenu id="formaPagamento" value="#{vendaBean.formaPagamentoSelecionada}" required="true">
-                     <f:selectItems value="#{vendaBean.formasDePagamento}" var="fp" itemLabel="#{fp}" itemValue="#{fp}" />
-                 </p:selectOneMenu>
-            </p:panelGrid>
+        <div class="venda-container">
             
-            <p:commandButton value="Finalizar Venda" 
-                             action="#{vendaBean.finalizarVenda}" 
-                             actionListener="#{vendaBean.gerarRecibo}"
-                             oncomplete="PF('dialogoRecibo').show()"
-                             update="@form"
+            <div class="coluna-esquerda">
+                <p:panel header="1. Adicionar Produtos">
+                    <p:panelGrid columns="2" styleClass="ui-noborder" style="width:100%;">
+                        <p:outputLabel for="produto" value="Produto:" />
+                        <h:panelGroup style="display: flex;">
+                            <p:selectOneMenu id="produto" value="#{vendaBean.produtoSelecionado}" requiredMessage="Selecione um produto"
+                                             converter="omnifaces.SelectItemsConverter">
+                                <f:selectItem itemLabel="Selecione..." itemValue="#{null}" noSelectionOption="true" />
+                                <f:selectItems value="#{vendaBean.todosProdutos}" var="prod"
+                                               itemLabel="#{prod.nomeProduto}" itemValue="#{prod}"/>
+                            </p:selectOneMenu>
+                            <p:commandButton type="button" icon="pi pi-search"
+                                             onclick="PF('dlgProdutos').show()"
+                                             style="margin-left: 5px;"/>
+                        </h:panelGroup>
+                        
+                        <p:outputLabel for="quantidade" value="Quantidade:" />
+                        <p:inputNumber id="quantidade" value="#{vendaBean.quantidadeSelecionada}" required="true" 
+                                       requiredMessage="Informe a quantidade" decimalPlaces="0"/>
+                    </p:panelGrid>
+                    <p:commandButton value="Adicionar ao carrinho" icon="pi pi-shopping-cart"
+                                     actionListener="#{vendaBean.adicionarItem}" 
+                                     update="carrinho messages"
+                                     process="produto quantidade @this"
+                                     style="margin-top:15px;" />
+                </p:panel>
+                
+                <p:panel header="2. Finalizar Venda">
+                    <p:panelGrid columns="2" styleClass="ui-noborder" style="width:100%;">
+                         <p:outputLabel for="cliente" value="Cliente (Opcional):" />
+                         <h:panelGroup style="display: flex;">
+                             <p:selectOneMenu id="cliente" value="#{vendaBean.clienteSelecionado}"
+                                              converter="omnifaces.SelectItemsConverter" filter="true">
+                                 <f:selectItem itemLabel="Consumidor Final" itemValue="#{null}" noSelectionOption="true"/>
+                                 <f:selectItems value="#{vendaBean.todosClientes}" var="cli"
+                                                itemLabel="#{cli.nomeCompleto}" itemValue="#{cli}"/>
+                             </p:selectOneMenu>
+                             <p:commandButton type="button" icon="pi pi-search"
+                                              onclick="PF('dlgClientes').show()" style="margin-left: 5px;" />
+                         </h:panelGroup>
+
+                         <p:outputLabel for="formaPagamento" value="Forma de Pagamento:" />
+                         <p:selectOneMenu id="formaPagamento" value="#{vendaBean.formaPagamentoSelecionada}" required="true"
+                                          requiredMessage="Selecione a forma de pagamento">
+                             <f:selectItem itemLabel="Selecione..." itemValue="#{null}" noSelectionOption="true"/>
+                             <f:selectItems value="#{vendaBean.formasDePagamento}" var="fp" itemLabel="#{fp}" itemValue="#{fp}" />
+                         </p:selectOneMenu>
+                    </p:panelGrid>
+                </p:panel>
+            </div>
+
+            <div class="coluna-direita">
+                <p:panel header="Carrinho de Compras">
+                    <p:dataTable id="carrinho" var="item" value="#{vendaBean.carrinhoDeCompras}" emptyMessage="O carrinho está vazio.">
+                        <p:column headerText="Produto">
+                            <h:outputText value="#{item.produto.nomeProduto}" />
+                        </p:column>
+                        <p:column headerText="Qtd" style="width:60px; text-align:center;">
+                            <h:outputText value="#{item.quantidade}" />
+                        </p:column>
+                        <p:column headerText="Preço Un.">
+                            <h:outputText value="#{item.valorUnitario}">
+                                 <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Subtotal">
+                            <h:outputText value="#{item.valorTotal}">
+                                 <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column style="width:50px; text-align:center;">
+                            <p:commandButton icon="pi pi-times" title="Remover" actionListener="#{vendaBean.removerItem(item)}" 
+                                             update="carrinho messages" process="@this" styleClass="ui-button-danger ui-button-flat"/>
+                        </p:column>
+                        
+                        <f:facet name="footer">
+                            <div style="text-align:right; font-weight: bold; font-size: 1.2em;">
+                                Total: <h:outputText value="#{vendaBean.venda.valorTotal}">
+                                     <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR" />
+                                </h:outputText>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </div>
+        </div>
+
+        <div style="margin-top: 15px; display: flex; justify-content: center; gap: 15px">
+            <p:button value="Voltar para o Painel" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" styleClass="ui-button-secondary"/>
+            <p:commandButton value="Finalizar Venda" icon="pi pi-check"
+                             actionListener="#{vendaBean.finalizarVenda}"
+                             oncomplete="if (!args.validationFailed) PF('dialogoRecibo').show()"
+                             update="messages carrinho"
                              process="formaPagamento cliente @this"
-                             style="margin-top: 10px;"/>
-        </p:panel>
-        
-        <p:button value="Voltar para o Painel" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" style="margin-top: 10px;"/>
+                             styleClass="ui-button-success" />
+        </div>
     </h:form>
     
     <p:dialog 

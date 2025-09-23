@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+//import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-//import javax.faces.view.ViewScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -17,7 +17,7 @@ import br.com.l3.erp.model.entity.usuario.CategoriaUsuario;
 import br.com.l3.erp.model.entity.usuario.Usuario;
 import br.com.l3.erp.security.PasswordEncoder;
 @Named
-@SessionScoped
+@ViewScoped
 public class UsuarioBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,11 +31,17 @@ public class UsuarioBean implements Serializable {
     private String filtroNome;
     private String filtroEmail;
     private CategoriaUsuario filtroCategoria;
+    private List<Usuario> usuariosFiltrados; 
     private Boolean filtroAtivo;
 
     private List<CategoriaUsuario> categorias;
 
     private UsuarioDAO usuarioDAO = new UsuarioDAO();
+    
+    private Usuario usuarioParaExcluir;
+    
+    private Long usuarioIdParaEdicao;
+    
 
     @PostConstruct
     public void init() {
@@ -134,6 +140,28 @@ public class UsuarioBean implements Serializable {
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário atualizado com sucesso!"));
         }
     }
+    
+    public void prepararExclusao(Usuario usuario) {
+        this.usuarioParaExcluir = usuario;
+    }
+    
+    public void confirmarExclusao() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            usuarioDAO.excluir(usuarioParaExcluir);
+            listarUsuarios(); // Recarrega a lista do banco após a exclusão
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário inativado."));
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível inativar o usuário."));
+        }
+        this.usuarioParaExcluir = null; // Limpa a seleção para a próxima operação
+    }
+    
+    public void carregarUsuarioParaEdicao() {
+        if (usuarioIdParaEdicao != null) {
+            this.usuarioSelecionado = usuarioDAO.buscarPorId(usuarioIdParaEdicao);
+        }
+    }
 
     // Getters e Setters
     public List<Usuario> getUsuarios() {
@@ -150,6 +178,14 @@ public class UsuarioBean implements Serializable {
     public String selecionarUsuario(Usuario u) {
         this.usuarioSelecionado = u;
         return "editarUsuario.xhtml?faces-redirect=true";
+    }
+    
+    public Long getUsuarioIdParaEdicao() {
+        return usuarioIdParaEdicao;
+    }
+
+    public void setUsuarioIdParaEdicao(Long usuarioIdParaEdicao) {
+        this.usuarioIdParaEdicao = usuarioIdParaEdicao;
     }
 
     public String getFiltroNome() { return filtroNome; }
@@ -175,5 +211,17 @@ public class UsuarioBean implements Serializable {
 
     public void setSenhaParaEdicao(String senhaParaEdicao) {
         this.senhaParaEdicao = senhaParaEdicao;
+    }
+    
+    public Usuario getUsuarioParaExcluir() {
+        return usuarioParaExcluir;
+    }
+    
+    public List<Usuario> getUsuariosFiltrados() {
+        return usuariosFiltrados;
+    }
+
+    public void setUsuariosFiltrados(List<Usuario> usuariosFiltrados) {
+        this.usuariosFiltrados = usuariosFiltrados;
     }
 }

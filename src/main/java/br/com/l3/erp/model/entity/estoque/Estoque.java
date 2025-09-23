@@ -79,6 +79,22 @@ public class Estoque implements Serializable {
 	public void setQuantidadeMaxima(Integer quantidadeMaxima) {
 		this.quantidadeMaxima = quantidadeMaxima;
 	}
-
-    
+	
+	/**
+	 * Método auxiliar que calcula e retorna o status do estoque com base na
+	 * quantidade atual e na quantidade mínima. Não é persistido no banco.
+	 * @return String com o status ("OK", "BAIXO", "CRITICO" ou "INDEFINIDO").
+	 */
+	public String getStatusEstoque() {
+	    if (this.quantidade == null || this.quantidadeMinima == null) {
+	        return "INDEFINIDO";
+	    }
+	    if (this.quantidade <= 0) {
+	        return "CRITICO";
+	    }
+	    if (this.quantidade <= this.quantidadeMinima) {
+	        return "BAIXO";
+	    }
+	    return "OK";
+	}
 }

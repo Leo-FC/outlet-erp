@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
@@ -5,88 +6,81 @@
 
 <h:head>
     <title>Editar Usuário</title>
-    
     <style>
         body {
-            background-color: #2c2c2c;
-            color: #f0f0f0;
             font-family: Arial, sans-serif;
-        }
-        h1 {
-            text-align: center;
-            color: #f0f0f0;
-            font-size: 36px;
-            margin-bottom: 40px;
-        }
-        .painel-botoes {
+            background-color: #f4f6f8;
             display: flex;
             justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
         }
-        .painel-botoes .p-button {
-            width: 200px;
-            height: 80px;
-            font-size: 16px;
+        .ui-panelgrid .ui-panelgrid-cell {
+            padding: 4px 8px;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-around;
         }
     </style>
 </h:head>
-
 <h:body>
+    <f:metadata>
+        <f:viewParam name="id" value="#{usuarioBean.usuarioIdParaEdicao}" />
+        <f:viewAction action="#{usuarioBean.carregarUsuarioParaEdicao}" />
+    </f:metadata>
+
     <h:form id="formEditarUsuario">
+		<p:growl id="growl" showDetail="true" />
+        
+        <p:panel id="painelEdicao" header="Editar Usuário">
+            <p:panelGrid columns="2" cellpadding="5">
 
-        <h1>Editar Usuário</h1>
+                <p:outputLabel for="nome" value="Nome Completo:" />
+                <p:inputText id="nome" value="#{usuarioBean.usuarioSelecionado.nomeCompleto}" 
+                             required="true" style="width:300px;"/>
 
-        <p:panel header="Informações do Usuário" style="width: 50%; margin: auto;">
+                <p:outputLabel for="email" value="Email:" />
+                <p:inputText id="email" value="#{usuarioBean.usuarioSelecionado.email}" 
+                             required="true" style="width:300px;"/>
 
-            <p:panelGrid columns="2" style="width:100%" columnClasses="label, value">
+                <p:outputLabel for="cpf" value="CPF:" />
+                <p:inputText id="cpf" value="#{usuarioBean.usuarioSelecionado.cpf}" 
+                             disabled="true" title="O CPF não pode ser alterado."/>
 
-                <p:outputLabel value="Nome Completo:" for="nome" />
-                <p:inputText id="nome" value="#{usuarioBean.usuarioSelecionado.nomeCompleto}" />
-
-                <p:outputLabel value="Email:" for="email" />
-                <p:inputText id="email" value="#{usuarioBean.usuarioSelecionado.email}" />
-
-                <p:outputLabel value="Categoria:" for="categoria" />
+                <p:outputLabel for="categoria" value="Categoria:" />
                 <p:selectOneMenu id="categoria" value="#{usuarioBean.usuarioSelecionado.categoriaUsuario}">
-                    <f:selectItems value="#{usuarioBean.categorias}" var="cat"
-                                   itemLabel="#{cat}" itemValue="#{cat}" />
+                    <f:selectItems value="#{usuarioBean.categorias}" var="cat" itemLabel="#{cat}" itemValue="#{cat}" />
                 </p:selectOneMenu>
 
-                <p:outputLabel value="Status:" for="ativo" />
+                <p:outputLabel for="ativo" value="Status:" />
                 <p:selectOneMenu id="ativo" value="#{usuarioBean.usuarioSelecionado.ativo}">
                     <f:selectItem itemLabel="Ativo" itemValue="true" />
                     <f:selectItem itemLabel="Inativo" itemValue="false" />
                 </p:selectOneMenu>
-
-                <p:outputLabel value="CPF:" for="cpf" />
-                <p:inputText id="cpf" value="#{usuarioBean.usuarioSelecionado.cpf}" maxlength="11">
-			    <f:validateRegex pattern="\d{11}" 
-			                     for="cpf" 
-			                     message="CPF deve ter 11 dígitos numéricos" />
-				</p:inputText>
+                
+                <p:outputLabel for="novaSenha" value="Nova Senha:" />
+                <p:password id="novaSenha" value="#{usuarioBean.senhaParaEdicao}"
+                            placeholder="Deixe em branco para manter a atual"
+                            feedback="false"/>
 
             </p:panelGrid>
+            
+            <p:separator style="margin-top:15px; margin-bottom:15px;" />
 
+            <div class="button-group">
+                <p:button value="Voltar" outcome="listarUsuarios.xhtml" icon="pi pi-arrow-left" 
+                          styleClass="ui-button-secondary"/>
+
+                <p:commandButton value="Salvar Alterações" 
+                                 actionListener="#{usuarioBean.salvarUsuarioSelecionado}"
+                                 update=":formEditarUsuario:growl :formEditarUsuario:painelEdicao"
+                                 process="@form"
+                                 icon="pi pi-check" />
+            </div>
         </p:panel>
-
-        <div class="painel-botoes" style="margin-top: 20px;">
-            <!-- Botão Salvar -->
-            <p:commandButton value="Salvar" action="#{usuarioBean.salvarUsuarioSelecionado}"
-                             update="@form"
-                             icon="pi pi-save"
-                             style="background-color:#4CAF50; border:none; color:white;"
-                             onmouseover="this.style.backgroundColor='#388E3C';"
-                             onmouseout="this.style.backgroundColor='#4CAF50';" />
-
-            <!-- Botão Voltar -->
-            <p:button value="Voltar" outcome="listarUsuarios.xhtml"
-                      icon="pi pi-arrow-left"
-                      style="background-color:#f44336; border:none; color:white;"
-                      onmouseover="this.style.backgroundColor='#d32f2f';"
-                      onmouseout="this.style.backgroundColor='#f44336';" />
-        </div>
-
     </h:form>
 </h:body>
 </html>

@@ -29,6 +29,10 @@ public class FornecedorBean implements Serializable {
     private Boolean filtroAtivo;
     
     private FornecedorDAO fornecedorDAO = new FornecedorDAO();
+    
+    private Fornecedor fornecedorParaExcluir;
+    private Long fornecedorIdParaEdicao;
+    private List<Fornecedor> fornecedoresFiltrados;
 
     @PostConstruct
     public void init() {
@@ -98,8 +102,30 @@ public class FornecedorBean implements Serializable {
     		listarFornecedoresComFiltros();
             FacesContext.getCurrentInstance().addMessage(null, 
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário atualizado!"));
-    		fornecedorSelecionado = new Fornecedor();
+//    		fornecedorSelecionado = new Fornecedor(); // apagar campos
     	}
+    }
+    
+    public void prepararExclusao(Fornecedor fornecedor) {
+        this.fornecedorParaExcluir = fornecedor;
+    }
+    
+    public void confirmarExclusao() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            fornecedorDAO.excluir(fornecedorParaExcluir);
+            listarFornecedores(); // Recarrega a lista
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Fornecedor inativado."));
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível inativar o fornecedor."));
+        }
+        this.fornecedorParaExcluir = null;
+    }
+    
+    public void carregarFornecedorParaEdicao() {
+        if (fornecedorIdParaEdicao != null) {
+            this.fornecedorSelecionado = fornecedorDAO.buscarPorId(fornecedorIdParaEdicao);
+        }
     }
 
     // Getters e Setters
@@ -167,5 +193,24 @@ public class FornecedorBean implements Serializable {
 		this.fornecedorDAO = fornecedorDAO;
 	}
 
+	public Fornecedor getFornecedorParaExcluir() {
+	    return fornecedorParaExcluir;
+	}
+
+	public Long getFornecedorIdParaEdicao() {
+	    return fornecedorIdParaEdicao;
+	}
+
+	public void setFornecedorIdParaEdicao(Long fornecedorIdParaEdicao) {
+	    this.fornecedorIdParaEdicao = fornecedorIdParaEdicao;
+	}
+
+	public List<Fornecedor> getFornecedoresFiltrados() {
+	    return fornecedoresFiltrados;
+	}
+
+	public void setFornecedoresFiltrados(List<Fornecedor> fornecedoresFiltrados) {
+	    this.fornecedoresFiltrados = fornecedoresFiltrados;
+	}
     
 }

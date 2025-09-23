@@ -23,7 +23,7 @@
                     <h:outputText value="#{produto.nomeProduto}" />
                 </p:column>
                 
-                <p:column headerText="Preço">
+                <p:column headerText="Preço" sortBy="#{produto.preco}">
                     <h:outputText value="#{produto.preco}">
                          <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR" />
                     </h:outputText>
@@ -80,12 +80,12 @@
             </p:dataTable>
         </p:panel>
         
-        <div class="p-d-flex p-jc-between" style="margin-top: 10px;">
+        <div class="p-d-flex p-jc-between" style="margin-top: 15px; text-align: cernter; display: flex; justify-content: center; gap: 15px;">
             <p:button value="Voltar" 
                       outcome="/admin/painelAdmin.xhtml" 
                       icon="pi pi-arrow-left"
-                      styleClass="ui-button-info"
-                      style="margin-right: 15px;" /> <p:button value="Novo Produto" 
+                      styleClass="ui-button-secondary" /> 
+            <p:button value="Novo Produto" 
                       outcome="cadastrarProduto" 
                       icon="pi pi-plus"
                       styleClass="ui-button-success" />

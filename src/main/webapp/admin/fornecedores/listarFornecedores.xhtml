@@ -1,128 +1,84 @@
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-
 <h:head>
-    <title>Listar Fornecedores</title>
-    <style>
+    <title>Lista de Fornecedores</title>
+    <style type="text/css">
         body {
-            background-color: #2c2c2c;
-            color: #f0f0f0;
+            background-color: #f4f6f8;
             font-family: Arial, sans-serif;
-        }
-        h1, h2 {
-            text-align: center;
-            color: #f0f0f0;
-        }
-        .painel-botoes {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .painel-botoes .p-button {
-            width: 200px;
-            height: 80px;
-            font-size: 16px;
         }
     </style>
 </h:head>
-
 <h:body>
     <h:form id="formFornecedores">
+        <p:growl id="growl" showDetail="true" />
 
-        <h2>Listar Fornecedores</h2>
+        <p:panel header="Fornecedores Cadastrados">
+            <p:dataTable id="tabelaFornecedores" widgetVar="tabelaFornecedoresWV"
+                         value="#{fornecedorBean.fornecedores}" var="f"
+                         paginator="true" rows="10"
+                         emptyMessage="Nenhum fornecedor encontrado.">
 
-        <p:panel header="Filtros" toggleable="true">
-            <p:panelGrid columns="4" style="width:100%">
+                <p:column headerText="Razão Social" filterBy="#{f.razaoSocial}" filterMatchMode="contains">
+                    <h:outputText value="#{f.razaoSocial}" />
+                </p:column>
+                
+                <p:column headerText="CNPJ" filterBy="#{f.cnpjFormatado}" filterMatchMode="contains">
+                    <h:outputText value="#{f.cnpjFormatado}" />
+                </p:column>
 
-                <p:outputLabel value="Razão Social:" for="fRazaoSocial" />
-                <p:inputText id="fRazaoSocial" value="#{fornecedorBean.filtroRazaoSocial}" />
+                <p:column headerText="Email da Empresa" filterBy="#{f.email}" filterMatchMode="contains">
+                     <h:outputText value="#{f.email}" />
+                </p:column>
+                
+                <p:column headerText="Status" filterBy="#{f.ativo}" filterMatchMode="exact" style="width:150px; text-align:center;">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('tabelaFornecedoresWV').filter()">
+                            <f:selectItem itemLabel="Todos" itemValue="#{null}" noSelectionOption="true" />
+                            <f:selectItem itemLabel="Ativo" itemValue="true" />
+                            <f:selectItem itemLabel="Inativo" itemValue="false" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <p:tag styleClass="#{f.ativo ? 'ui-tag-success' : 'ui-tag-danger'}"
+                           value="#{f.ativo ? 'Ativo' : 'Inativo'}" icon="#{f.ativo ? 'pi pi-check' : 'pi pi-times'}" />
+                </p:column>
 
-                <p:outputLabel value="CNPJ:" for="fCNPJ" />
-                <p:inputText id="fCNPJ" value="#{fornecedorBean.filtroCNPJ}" />
-
-                <p:outputLabel value="Status:" for="fAtivo" />
-                <p:selectOneMenu id="fAtivo" value="#{fornecedorBean.filtroAtivo}">
-                    <f:selectItem itemLabel="TODOS" itemValue="#{null}" />
-                    <f:selectItem itemLabel="Ativos" itemValue="true" />
-                    <f:selectItem itemLabel="Inativos" itemValue="false" />
-                </p:selectOneMenu>
-
-            </p:panelGrid>
-
-            <div style="text-align:center; margin-top:15px;">
-                <p:commandButton value="Filtrar" 
-                                 action="#{fornecedorBean.listarFornecedoresComFiltros}"
-                                 update="tabelaFornecedores"
-                                 icon="pi pi-search"
-                                 style="margin-right:10px; background-color:#4CAF50; border:none; color:white;"
-                                 onmouseover="this.style.backgroundColor='#388E3C';"
-                                 onmouseout="this.style.backgroundColor='#4CAF50';" />
-
-                <p:commandButton value="Limpar" 
-                                 action="#{fornecedorBean.limparFiltros}"
-                                 update="tabelaFornecedores,formFornecedores:fRazaoSocial,formFornecedores:fCNPJ,formFornecedores:fAtivo"
-                                 icon="pi pi-times"
-                                 style="background-color:#f44336; border:none; color:white;"
-                                 onmouseover="this.style.backgroundColor='#d32f2f';"
-                                 onmouseout="this.style.backgroundColor='#f44336';" />               
-            </div>
+                <p:column headerText="Ações" width="100" style="text-align: center;">
+                    <p:button icon="pi pi-pencil" styleClass="ui-button-info ui-button-flat"
+                              outcome="editarFornecedor.xhtml?id=#{f.idFornecedor}"
+                              title="Editar" />
+                    
+                    <p:commandButton icon="pi pi-trash" title="Desativar"
+                                     actionListener="#{fornecedorBean.prepararExclusao(f)}"
+                                     oncomplete="PF('confirmacaoExclusao').show()"
+                                     update=":formConfirmacao"
+                                     styleClass="ui-button-danger ui-button-flat" />
+                </p:column>
+            </p:dataTable>
         </p:panel>
-
-        <br/>
-
-        <p:dataTable id="tabelaFornecedores" value="#{fornecedorBean.fornecedores}" var="f"
-                     paginator="true" rows="10"
-                     emptyMessage="Nenhum usuário encontrado">
-
-            <p:column headerText="CNPJ">
-                <h:outputText value="#{f.cnpjFormatado}" />
-            </p:column>
-
-            <p:column headerText="Razão Social">
-                #{f.razaoSocial}
-            </p:column>
-
-            <p:column headerText="Email da Empresa" style="word-break: break-all; max-width: 200px;">
-                <h:outputText value="#{f.email}" />
-            </p:column>
-
-            <p:column headerText="Nome de Contato">
-                <h:outputText value="#{f.contatoNome}"/>
-            </p:column>
-
-            <p:column headerText="Email de Contato">
-                <h:outputText value="#{f.contatoEmail}"/>
-            </p:column>
-
-            <p:column headerText="Status">
-                <h:outputText value="#{f.ativo ? 'Ativo' : 'Inativo'}" />
-            </p:column>
-
-            <p:column headerText="Ações" style="text-align:center; width:150px">
-
-                <p:commandButton value="Editar" icon="pi pi-pencil"
-                                 action="#{fornecedorBean.selecionarFornecedor(f)}"
-                                 ajax="false"/>
-                                
-
-                <p:commandButton value="Excluir" icon="pi pi-trash"
-                                 action="#{fornecedorBean.excluir(f)}"
-                                 update="tabelaFornecedores"
-                                 style="background-color:#f44336; border:none; color:white;"
-                                 onmouseover="this.style.backgroundColor='#d32f2f';"
-                                 onmouseout="this.style.backgroundColor='#f44336';" />
-            </p:column>
-
-        </p:dataTable>
-
-        <div style="text-align:center; margin-top:20px;">
-	        <p:button value="Voltar" outcome="/admin/painelAdmin.xhtml"
-	                  icon="pi pi-arrow-left" styleClass="ui-button-secondary"/>
-   		</div>
-
+        
+        <div style="margin-top: 15px; text-align: center; display: flex; justify-content: center; gap: 15px;">
+            <p:button value="Voltar" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" styleClass="ui-button-secondary"/>
+            <p:button value="Novo Fornecedor" outcome="cadastrarFornecedor.xhtml" icon="pi pi-plus" styleClass="ui-button-success"/>
+        </div>
     </h:form>
+
+    <p:confirmDialog widgetVar="confirmacaoExclusao" header="Confirmação de Exclusão Lógica" 
+                     message="Tem certeza que deseja desativar o fornecedor '#{fornecedorBean.fornecedorParaExcluir.razaoSocial}'?" 
+                     icon="pi pi-exclamation-triangle" appendTo="@(body)">
+        <h:form id="formConfirmacao">
+            <p:commandButton value="Sim, desativar" icon="pi pi-check" 
+                             actionListener="#{fornecedorBean.confirmarExclusao}"
+                             oncomplete="PF('confirmacaoExclusao').hide()" 
+                             update=":formFornecedores:tabelaFornecedores :formFornecedores:growl" 
+                             styleClass="ui-button-danger"/>
+            <p:commandButton value="Não" type="button" icon="pi pi-times" 
+                             onclick="PF('confirmacaoExclusao').hide()" 
+                             styleClass="ui-button-secondary"/>
+        </h:form>
+    </p:confirmDialog>
 </h:body>
 </html>
