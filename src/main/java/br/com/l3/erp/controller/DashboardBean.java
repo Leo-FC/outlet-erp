@@ -69,7 +69,6 @@ public class DashboardBean implements Serializable {
         this.produtosComEstoqueBaixo = estoqueDAO.buscarProdutosComEstoqueBaixo();
     }
 
-    // --- Gráfico de vendas por mês ---
     private void criarGraficoVendasPorMes() {
         vendasPorMesModel = new LineChartModel();
         ChartData data = new ChartData();
@@ -90,16 +89,6 @@ public class DashboardBean implements Serializable {
             labels.add("Mês " + mes);
             valores.add(total);
         }
-        
-        labels.add("Janeiro");
-        labels.add("Fevereiro");
-        labels.add("Março");
-        labels.add("Abril");
-        labels.add("Maio");
-        labels.add("Junho");
-        labels.add("Julho");
-        labels.add("Agosto");
-        labels.add("Setembro");
 
         dataSet.setData(valores);
         data.addChartDataSet(dataSet);
@@ -108,7 +97,6 @@ public class DashboardBean implements Serializable {
         vendasPorMesModel.setData(data);
     }
     
- // --- Gráfico de vendas por forma de pagamento ---
     private void criarGraficoVendasPorFormaPagamento() {
         vendasPorPagamentoModel = new PieChartModel();
         ChartData data = new ChartData();

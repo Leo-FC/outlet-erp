@@ -102,7 +102,6 @@ public class FornecedorBean implements Serializable {
     		listarFornecedoresComFiltros();
             FacesContext.getCurrentInstance().addMessage(null, 
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário atualizado!"));
-//    		fornecedorSelecionado = new Fornecedor(); // apagar campos
     	}
     }
     

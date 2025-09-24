@@ -40,8 +40,6 @@ public class ProdutoBean implements Serializable {
     
     @Inject
     private FornecedorDAO fornecedorDAO;
-    
-
 
 	private Produto produto = new Produto();
 	private Long idProduto;

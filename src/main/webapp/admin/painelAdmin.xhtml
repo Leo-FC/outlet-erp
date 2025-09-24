@@ -11,7 +11,6 @@
     		--primary-color: #FFFFFF;
     		--secondary-color: #2C2C2C;
     		--text-color: #000000;
-    		/* --text-color: #F0F0F0; */
     	}
     	
     	* { 
@@ -34,6 +33,7 @@
         	display: flex;
         	flex-direction: row;
         	min-height: 100vh;
+        	align-items: flex-start;
         }
         
         .navbar {
@@ -44,6 +44,10 @@
             background-color: var(--secondary-color);
             width: 220px;
             padding: 15px;
+            
+            position: sticky;
+            top: 0;
+            height: 100vh;
         }
         
         .avatar{
@@ -60,6 +64,7 @@
         	flex-direction: column;
         	flex: 1;	
         	border-bottom: 1px solid var(--secondary-color);
+        	min-height: 100vh; 
        	}
        	
        	.painel h1 {
@@ -87,7 +92,13 @@
                 <a href=""><img src="https://static.vecteezy.com/ti/vetor-gratis/p1/11209565-avatar-do-perfil-do-usuario-gratis-vetor.jpg" alt="Avatar" class="avatar"/></a>
             </div>
             
-            <h:form>
+            <h:form style="margin-top: 20px;">
+            	<p:commandButton value="Dashboard" icon="pi pi-desktop"
+                                 actionListener="#{painelAdminBean.navegarPara('/admin/dashboardInicial.xhtml')}"
+                                 update=":formPainel:dashboardContent"
+                                 styleClass="p-button-raised p-button-rounded p-button-info"
+                                 style="width: 100%; margin-bottom: 10px;"/>
+                                 
                 <p:commandButton value="Usuários" icon="pi pi-users"
                                  actionListener="#{painelAdminBean.navegarPara('/admin/usuarios/gerenciarUsuarios.xhtml')}"
                                  update=":formPainel:dashboardContent"

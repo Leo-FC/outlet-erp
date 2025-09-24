@@ -14,7 +14,7 @@ public class AppInitializer implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         System.out.println("Iniciando a aplicação web. Carregando propriedades...");
 
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("database.properties")) {
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
             if (input == null) {
                 throw new RuntimeException("Arquivo database.properties não encontrado no classpath!");
             }

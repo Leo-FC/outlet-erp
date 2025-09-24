@@ -14,7 +14,6 @@ public class PainelAdminBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        // Define uma página padrão para ser carregada inicialmente
         paginaAtual = "/admin/dashboardInicial.xhtml"; 
     }
 
