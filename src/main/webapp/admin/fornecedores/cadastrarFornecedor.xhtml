@@ -6,6 +6,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <h:head>
     <title>Cadastrar Fornecedor</title>
+    <h:outputStylesheet name="css/panel.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -36,7 +37,13 @@
     <h:form id="formFornecedor">
         <p:growl id="growl" showDetail="true" />
 
-        <p:panel header="Novo Fornecedor">
+        <p:panel>
+            <f:facet name="header">
+                <div class="module-header fornecedores">
+                    <i class="pi pi-truck" style="font-size: 1.5rem;"></i>
+                    <h:outputText value="Novo Fornecedor" style="font-size: 1.2rem;" />
+                </div>
+            </f:facet>
             <h:panelGrid columns="2" cellpadding="5">
 
                 <p:outputLabel for="razao" value="Razão Social: "/>

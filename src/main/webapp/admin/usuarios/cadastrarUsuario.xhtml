@@ -6,6 +6,7 @@
 	  xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <h:head>
     <title>Cadastro de Usuário</title>
+    <h:outputStylesheet name="css/panel.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,9 +18,11 @@
             margin: 0;
             padding: 20px;
         }
+        
         .ui-panelgrid .ui-panelgrid-cell {
             padding: 4px 8px;
         }
+        
         .button-group { 
 	        margin-top: 25px; 
 	        display: flex; 
@@ -36,7 +39,13 @@
     <h:form id="formUsuario">
         <p:growl id="growl" showDetail="true" />
 
-        <p:panel header="Novo Usuário">
+        <p:panel>
+            <f:facet name="header">
+                <div class="module-header usuarios">
+                    <i class="pi pi-users" style="font-size: 1.5rem;"></i>
+                    <h:outputText value="Novo Usuário" style="font-size: 1.2rem;" />
+                </div>
+            </f:facet>
             <h:panelGrid columns="2" cellpadding="5">
 
                 <p:outputLabel for="nome" value="Nome completo: " />

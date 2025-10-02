@@ -133,6 +133,7 @@ public class VendaBean implements Serializable {
     public void finalizarVenda() {
         if (carrinhoDeCompras.isEmpty()) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso", "O carrinho está vazio. Adicione produtos para finalizar a venda."));
+            FacesContext.getCurrentInstance().getPartialViewContext().getEvalScripts().add("args.validationFailed=true;");
             return;
         }
         
@@ -177,19 +178,17 @@ public class VendaBean implements Serializable {
                 }
             }
             
-            // Passo 7: Limpar os campos para a próxima venda e exibir mensagem de sucesso
-            carrinhoDeCompras.clear();
-            venda = new Venda();
-            venda.setValorTotal(BigDecimal.ZERO);
-            clienteSelecionado = null; 
+            // Passo 7: Gerar o recibo ANTES de limpar os dados
+            gerarReciboPDF();
             
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Venda finalizada com sucesso!"));
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao finalizar a venda: " + e.getMessage()));
-        }
+	        } catch (Exception e) {
+	            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao finalizar a venda: " + e.getMessage()));
+	            FacesContext.getCurrentInstance().getPartialViewContext().getEvalScripts().add("args.validationFailed=true;");
+	        }
     }
     
-    public void gerarRecibo() {
+    private void gerarReciboPDF() {
         try {
         	Usuario vendedorLogado = loginBean.getUsuarioLogado();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -200,7 +199,7 @@ public class VendaBean implements Serializable {
             // Obtém o nome do cliente e do vendedor para usar no nome do arquivo
             String nomeCliente = (clienteSelecionado != null) ? clienteSelecionado.getNomeCompleto() : "Cliente_Nao_Informado";
             String nomeVendedor = (vendedorLogado != null) ? vendedorLogado.getNomeCompleto() : "Vendedor_Nao_Informado";
-            String nomeArquivo = "recibo-" + nomeCliente.replace(" ", "_") + ".pdf";
+            String nomeArquivo = "recibo-" + nomeCliente.replace(" ", "_") + "-" + venda.getIdVenda() + ".pdf";
 
             // Formata a data e hora para o padrão brasileiro
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", new Locale("pt", "BR"));
@@ -249,13 +248,25 @@ public class VendaBean implements Serializable {
             document.close();
 
             this.recibo = DefaultStreamedContent.builder()
-                .contentType("application/pdf")
-                .name(nomeArquivo)
-                .stream(() -> new ByteArrayInputStream(out.toByteArray()))
-                .build();
+	            .contentType("application/pdf")
+	            .name(nomeArquivo)
+	            .stream(() -> new ByteArrayInputStream(out.toByteArray()))
+	            .build();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    // Novo método para limpar o formulário, chamado pelo diálogo
+    public void novaVenda() {
+        carrinhoDeCompras.clear();
+        venda = new Venda();
+        venda.setValorTotal(BigDecimal.ZERO);
+        clienteSelecionado = null;
+        formaPagamentoSelecionada = null;
+        recibo = null;
+        this.produtoSelecionado = null;
+        this.quantidadeSelecionada = null;
     }
 
     public StreamedContent getRecibo() {

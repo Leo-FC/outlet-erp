@@ -6,13 +6,20 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <h:head>
     <title>Lista de Produtos</title>
+    <h:outputStylesheet name="css/style.css" />
+    <h:outputStylesheet name="css/panel.css" />
 </h:head>
 <h:body>
 
     <h:form id="formProdutos">
-        <p:panel header="Produtos Cadastrados">
-            <p:messages id="messages" showDetail="true" closable="true" />
-
+        <p:messages id="messages" showDetail="true" closable="true" />
+		<p:panel>
+            <f:facet name="header">
+                <div class="module-header produtos">
+                    <i class="pi pi-box" style="font-size: 1.5rem;"></i>
+                    <h:outputText value="Produtos Cadastrados" style="font-size: 1.2rem;" />
+                </div>
+            </f:facet>
             <p:dataTable id="tabelaProdutos" 
                          widgetVar="dataTable" 
                          value="#{produtoBean.produtos}" 
@@ -80,7 +87,7 @@
             </p:dataTable>
         </p:panel>
         
-        <div class="p-d-flex p-jc-between" style="margin-top: 15px; text-align: cernter; display: flex; justify-content: center; gap: 15px;">
+        <div class="p-d-flex p-jc-between" style="padding: 15px; text-align: cernter; display: flex; justify-content: center; gap: 15px;">
             <p:button value="Voltar" 
                       outcome="/admin/painelAdmin.xhtml" 
                       icon="pi pi-arrow-left"

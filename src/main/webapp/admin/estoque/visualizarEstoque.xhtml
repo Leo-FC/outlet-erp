@@ -5,18 +5,20 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 <h:head>
     <title>Controle de Estoque</title>
-    <style type="text/css">
-        body {
-            background-color: #f4f6f8;
-            font-family: Arial, sans-serif;
-        }
-    </style>
+    <h:outputStylesheet name="css/style.css" />
+    <h:outputStylesheet name="css/panel.css" />
 </h:head>
 <h:body>
     <h:form id="formEstoque">
         <p:growl id="growl" showDetail="true" />
 
-        <p:panel header="Controle de Estoque">
+        <p:panel>
+            <f:facet name="header">
+                <div class="module-header estoque">
+                    <i class="pi pi-table" style="font-size: 1.5rem;"></i>
+                    <h:outputText value="Controle de Estoque" style="font-size: 1.2rem;" />
+                </div>
+            </f:facet>
 
             <p:dataTable id="dtEstoque" widgetVar="tabelaEstoqueWV"
                          value="#{estoqueBean.listaEstoque}" var="est"
@@ -66,7 +68,7 @@
             </p:dataTable>
         </p:panel>
         
-        <div style="margin-top: 15px; text-align: center; display: flex; justify-content: center; gap: 15px;">
+        <div style="padding: 15px; text-align: center; display: flex; justify-content: center; gap: 15px;">
             <p:button value="Voltar" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" styleClass="ui-button-secondary"/>
             <p:button value="Adicionar Estoque" outcome="/admin/estoque/cadastroEstoque.xhtml" icon="pi pi-plus" styleClass="ui-button-success" />
         </div>

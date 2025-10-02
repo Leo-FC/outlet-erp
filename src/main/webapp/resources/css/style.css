@@ -1,0 +1,151 @@
+/* ================================================
+   LAYOUT PRINCIPAL (painelAdmin)
+   ================================================ */
+:root {
+    --primary-color: #FFFFFF;
+    --secondary-color: #2C2C2C;
+    --text-color: #000000;
+    
+    /* Cores dos Módulos */
+    --cor-usuarios: #007BFF;
+    --cor-produtos: #6f42c1;
+    --cor-fornecedores: #fd7e14;
+    --cor-estoque: #ff9c0a;
+    --cor-vendas: #28a745;
+}
+
+* { 
+	margin: 0; 
+ 	padding: 0; 
+ 	box-sizing: border-box; 
+}
+    	
+html, body {
+	height: 100%;
+}
+    	
+body {
+	background-color: var(--primary-color);
+    color: var(--text-color);
+    font-family: Arial, sans-serif;
+}
+        
+.container {
+	display: flex;
+	flex-direction: row;
+	min-height: 100vh;
+	align-items: flex-start;
+}
+        
+.navbar {
+	display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex-shrink: 0;
+    background-color: var(--secondary-color);
+    width: 220px;
+    padding: 15px;
+            
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+        
+.avatar{
+	border-radius: 100%;
+	margin: 10px auto;
+	display: block;
+	width: 120px;
+	height: 120px;
+	object-fit: cover;
+}
+        
+.painel {
+	display: flex;
+    flex-direction: column;
+    flex: 1;	
+    border-bottom: 1px solid var(--secondary-color);
+    min-height: 100vh; 
+}
+       	
+.painel h1 {
+	text-align: center;
+    color: var(--text-color);
+    font-size: 36px;
+    padding: 20px 10px;
+    margin: 0;
+    flex-shrink: 0;
+}
+       	
+.dashboard {
+	flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+} 
+
+/* ================================================
+   DASHBOARD
+   ================================================ */
+.dashboard-container {
+	padding: 20px;
+}
+
+.card-container {
+	display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.dashboard-card {
+	width: 280px;
+    text-align: center;
+}
+
+.dashboard-card .card-icon {
+	font-size: 48px;
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+.alert-estoque {
+	border: 1px solid #FFCC80; 
+    background-color: #FFF3E0; 
+    color: #E65100;
+    padding: 15px; 
+    margin-bottom: 20px; 
+    border-radius: 8px;
+    display: flex; 
+    justify-content: center;
+    align-items: center; 
+}
+
+.alert-estoque .pi { 
+	font-size: 1.5em; 
+	margin-right: 15px; 
+}
+
+.piechart {
+	width: 100%;
+	max-width: 450px;
+	height: 450px;
+	margin: auto;
+}
+
+.container-graficos {
+	display: flex; 
+	flex-wrap: wrap;
+	gap: 20px;
+	margin-top: 40px;
+}
+
+.wrapper-linechart {
+	flex: 2;
+	min-width: 300px;
+}
+
+.wrapper-piechart{
+	flex: 1;
+	min-width: 300px;
+}

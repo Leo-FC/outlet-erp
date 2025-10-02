@@ -5,18 +5,20 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 <h:head>
     <title>Lista de Fornecedores</title>
-    <style type="text/css">
-        body {
-            background-color: #f4f6f8;
-            font-family: Arial, sans-serif;
-        }
-    </style>
+    <h:outputStylesheet name="css/style.css" />
+    <h:outputStylesheet name="css/panel.css" />
 </h:head>
 <h:body>
     <h:form id="formFornecedores">
         <p:growl id="growl" showDetail="true" />
 
-        <p:panel header="Fornecedores Cadastrados">
+        <p:panel>
+            <f:facet name="header">
+                <div class="module-header fornecedores">
+                    <i class="pi pi-truck" style="font-size: 1.5rem;"></i>
+                    <h:outputText value="Fornecedores Cadastrados" style="font-size: 1.2rem;" />
+                </div>
+            </f:facet>
             <p:dataTable id="tabelaFornecedores" widgetVar="tabelaFornecedoresWV"
                          value="#{fornecedorBean.fornecedores}" var="f"
                          paginator="true" rows="10"
@@ -60,7 +62,7 @@
             </p:dataTable>
         </p:panel>
         
-        <div style="margin-top: 15px; text-align: center; display: flex; justify-content: center; gap: 15px;">
+        <div style="padding: 15px; text-align: center; display: flex; justify-content: center; gap: 15px;">
             <p:button value="Voltar" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" styleClass="ui-button-secondary"/>
             <p:button value="Novo Fornecedor" outcome="cadastrarFornecedor.xhtml" icon="pi pi-plus" styleClass="ui-button-success"/>
         </div>

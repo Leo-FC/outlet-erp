@@ -1,0 +1,56 @@
+:root {
+    --primary-color: #FFFFFF;
+    --secondary-color: #2C2C2C;
+    --text-color: #000000;
+    
+    /* Cores dos Módulos */
+    --cor-usuarios: #007BFF;
+    --cor-produtos: #6f42c1;
+    --cor-fornecedores: #fd7e14;
+    --cor-estoque: #ff9c0a;
+    --cor-vendas: #28a745;
+}
+
+.module-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px; /* Espaço para a borda */
+    border-bottom: 3px solid; /* Borda que será colorida */
+}
+
+.module-header .pi {
+    font-size: 1.5rem;
+}
+
+.module-header h5 {
+    font-size: 1.2rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Cores para cada módulo */
+.module-header.usuarios {
+	color: var(--cor-usuarios);
+    border-bottom-color: var(--cor-usuarios);
+}
+
+.module-header.produtos {
+    color: var(--cor-produtos);
+    border-bottom-color: var(--cor-produtos);
+}
+
+.module-header.fornecedores {
+    color: var(--cor-fornecedores);
+    border-bottom-color: var(--cor-fornecedores);
+}
+
+.module-header.estoque {
+    color: var(--cor-estoque);
+    border-bottom-color: var(--cor-estoque);
+}
+
+.module-header.vendas {
+    color: var(--cor-vendas);
+    border-bottom-color: var(--cor-vendas);
+}

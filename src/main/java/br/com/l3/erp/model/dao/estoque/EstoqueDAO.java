@@ -10,6 +10,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 
 import br.com.l3.erp.model.entity.estoque.Estoque;
+import br.com.l3.erp.model.entity.produto.Produto;
 
 public class EstoqueDAO implements Serializable{
 
@@ -87,15 +88,31 @@ public class EstoqueDAO implements Serializable{
         }
     }
     
+ // Dentro da sua classe EstoqueDAO.java
+
     public void remover(Long id) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
+            
+            // 1. Encontra o registro de estoque que queremos excluir
             Estoque estoque = em.find(Estoque.class, id);
+            
             if (estoque != null) {
+                // 2. Pega o produto associado a este estoque
+                Produto produto = estoque.getProduto();
+                
+                // 3. Se houver um produto associado, quebra o vínculo
+                if (produto != null) {
+                    produto.setEstoque(null); // Assume que a entidade Produto tem um setEstoque()
+                    em.merge(produto); // Atualiza o produto para remover a referência
+                }
+                
+                // 4. Agora que o vínculo foi quebrado, podemos remover o estoque com segurança
                 em.remove(estoque);
             }
+            
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {
@@ -106,6 +123,5 @@ public class EstoqueDAO implements Serializable{
             em.close();
         }
     }
-
     
 }

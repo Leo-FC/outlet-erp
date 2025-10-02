@@ -88,7 +88,7 @@
             </div>
 
             <div class="coluna-direita">
-                <p:panel header="Carrinho de Compras">
+                <p:panel header="Carrinho de Compras" >
                     <p:dataTable id="carrinho" var="item" value="#{vendaBean.carrinhoDeCompras}" emptyMessage="O carrinho está vazio.">
                         <p:column headerText="Produto">
                             <h:outputText value="#{item.produto.nomeProduto}" />
@@ -124,14 +124,14 @@
         </div>
 
         <div style="margin-top: 15px; display: flex; justify-content: center; gap: 15px">
-            <p:button value="Voltar para o Painel" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" styleClass="ui-button-secondary"/>
-            <p:commandButton value="Finalizar Venda" icon="pi pi-check"
-                             actionListener="#{vendaBean.finalizarVenda}"
-                             oncomplete="if (!args.validationFailed) PF('dialogoRecibo').show()"
-                             update="messages carrinho"
-                             process="formaPagamento cliente @this"
-                             styleClass="ui-button-success" />
-        </div>
+		    <p:button value="Voltar para o Painel" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" styleClass="ui-button-secondary"/>
+		    <p:commandButton value="Finalizar Venda" icon="pi pi-check"
+		                     actionListener="#{vendaBean.finalizarVenda}"
+		                     oncomplete="if (!args || !args.validationFailed) { PF('dialogoRecibo').show(); }"
+		                     update="messages carrinho"
+		                     process="@form"
+		                     styleClass="ui-button-success" />
+		</div>
     </h:form>
     
     <p:dialog 
@@ -196,8 +196,8 @@
                 value="#{vendaBean.todosClientes}" 
                 var="cliente" 
                 widgetVar="clientesTable" 
-                paginator="true" 
-                rows="10"
+                scrollable="true" 
+   				scrollHeight="300"
                 emptyMessage="Nenhum cliente encontrado.">
                 
                 <f:facet name="header">
@@ -217,7 +217,7 @@
                 </p:column>
 
                 <p:column headerText="Ação" style="width: 80px; text-align: center;">
-                    <p:commandButton value="Selecionar" 
+                    <p:commandButton icon="pi pi-check" title="Selecionar"
                                      oncomplete="PF('dlgClientes').hide()" 
                                      action="#{vendaBean.selecionarCliente(cliente)}"
                                      update=":vendaForm" />
@@ -226,19 +226,28 @@
         </h:form>
     </p:dialog>
     
-	<p:dialog header="Recibo de Venda" widgetVar="dialogoRecibo" modal="true">
-	    <h:form>
-	        <h:outputText value="Venda finalizada com sucesso! O que você gostaria de fazer com o recibo?" style="font-weight: bold;"/>
-	        <p:panelGrid columns="2" style="margin-top:20px;">
-	            <p:commandButton value="Baixar Recibo" styleClass="ui-button-success" ajax="false">
-	                <p:fileDownload value="#{vendaBean.recibo}" />
-	            </p:commandButton>
-	            <p:commandButton value="Visualizar Recibo" styleClass="ui-button-info" ajax="false">
-	                <p:fileDownload value="#{vendaBean.recibo}" />
-	            </p:commandButton>
-	        </p:panelGrid>
-	        <p:commandButton value="Fechar" onclick="PF('dialogoRecibo').hide()" style="margin-top: 10px;"/>
-	    </h:form>
-	</p:dialog>
+	<p:dialog header="Venda Concluída" widgetVar="dialogoRecibo" modal="true" closable="false" appendTo="@(body)">
+    <h:form id="formRecibo">
+        <div style="text-align: center;">
+            <i class="pi pi-check-circle" style="font-size: 3rem; color: var(--green-500);"></i>
+            <h:outputText value="Venda finalizada com sucesso!" style="display: block; font-weight: bold; margin: 10px 0;"/>
+            <p>O que você gostaria de fazer com o recibo?</p>
+        </div>
+        
+        <div style="margin-top:20px; display: flex; justify-content: center; gap: 10px;">
+            <p:commandButton value="Baixar Recibo" icon="pi pi-download" styleClass="ui-button-success" ajax="false">
+                <p:fileDownload value="#{vendaBean.recibo}" />
+            </p:commandButton>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center;">
+            <p:commandButton value="Iniciar Nova Venda" 
+                             actionListener="#{vendaBean.novaVenda}"
+                             oncomplete="PF('dialogoRecibo').hide()"
+                             update=":vendaForm"
+                             process="@this" />
+        </div>
+    </h:form>
+</p:dialog>
 </h:body>
 </html>

@@ -6,6 +6,7 @@
 
 <h:head>
     <title>Editar Usuário</title>
+    <h:outputStylesheet name="css/panel.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,9 +18,11 @@
             margin: 0;
             padding: 20px;
         }
+        
         .ui-panelgrid .ui-panelgrid-cell {
             padding: 4px 8px;
         }
+        
         .button-group {
             display: flex;
             justify-content: space-around;
@@ -35,7 +38,13 @@
     <h:form id="formEditarUsuario">
 		<p:growl id="growl" showDetail="true" />
         
-        <p:panel id="painelEdicao" header="Editar Usuário">
+        <p:panel id="painelEdicao">
+            <f:facet name="header">
+                <div class="module-header usuarios">
+                    <i class="pi pi-users" style="font-size: 1.5rem;"></i>
+                    <h:outputText value="Editar Usuário" style="font-size: 1.2rem;" />
+                </div>
+            </f:facet>
             <p:panelGrid columns="2" cellpadding="5">
 
                 <p:outputLabel for="nome" value="Nome Completo:" />
