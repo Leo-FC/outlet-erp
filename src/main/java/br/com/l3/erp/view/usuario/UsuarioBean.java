@@ -1,15 +1,17 @@
 package br.com.l3.erp.view.usuario;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 //import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import br.com.l3.erp.model.dao.usuario.UsuarioDAO;
@@ -36,7 +38,8 @@ public class UsuarioBean implements Serializable {
 
     private List<CategoriaUsuario> categorias;
 
-    private UsuarioDAO usuarioDAO = new UsuarioDAO();
+    @Inject
+    private UsuarioDAO usuarioDAO;
     
     private Usuario usuarioParaExcluir;
     

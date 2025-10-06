@@ -3,44 +3,36 @@ package br.com.l3.erp.model.dao.venda;
 import br.com.l3.erp.model.entity.venda.ItemVenda;
 import java.io.Serializable;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 
+@ApplicationScoped
 public class ItemVendaDAO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("erpPU");
+    @Inject
+    private EntityManager em;
 
     public void salvar(ItemVenda itemVenda) {
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
         try {
-            transaction.begin();
+            em.getTransaction().begin();
             if (itemVenda.getIdItemVenda() == null) {
                 em.persist(itemVenda);
             } else {
                 em.merge(itemVenda);
             }
-            transaction.commit();
+            em.getTransaction().commit();
         } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
             }
             throw e;
-        } finally {
-            em.close();
         }
     }
     
     public List<ItemVenda> buscarTodos() {
-        EntityManager em = emf.createEntityManager();
-        try {
-            return em.createQuery("FROM ItemVenda", ItemVenda.class).getResultList();
-        } finally {
-            em.close();
-        }
+        return em.createQuery("FROM ItemVenda", ItemVenda.class).getResultList();
     }
 }

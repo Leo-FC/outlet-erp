@@ -1,33 +1,51 @@
 package br.com.l3.erp.model.dao.financeiro;
 
 import br.com.l3.erp.model.entity.financeiro.ContaPagar;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import java.util.List;
 
+@ApplicationScoped
 public class ContaPagarDAO {
 
-	private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("erpPU");
+    @Inject
+    private EntityManager em;
 
-    @PersistenceContext
-    private EntityManager em = emf.createEntityManager();
-
-    @Transactional
     public void salvar(ContaPagar conta) {
-        em.persist(conta);
+        try {
+            em.getTransaction().begin();
+            em.persist(conta);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
+        }
     }
 
-    @Transactional
     public void atualizar(ContaPagar conta) {
-        em.merge(conta);
+        try {
+            em.getTransaction().begin();
+            em.merge(conta);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
+        }
     }
 
-    @Transactional
     public void remover(ContaPagar conta) {
-        em.remove(em.contains(conta) ? conta : em.merge(conta));
+        try {
+            em.getTransaction().begin();
+            if (!em.contains(conta)) {
+                conta = em.merge(conta);
+            }
+            em.remove(conta);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
+        }
     }
 
     public ContaPagar buscarPorId(Long id) {
@@ -41,7 +59,7 @@ public class ContaPagarDAO {
 
     public List<ContaPagar> listarPorFornecedor(Long idFornecedor) {
         return em.createQuery(
-                "SELECT c FROM ContaPagar c WHERE c.fornecedor.id_fornecedor = :id", ContaPagar.class)
+                "SELECT c FROM ContaPagar c WHERE c.fornecedor.idFornecedor = :id", ContaPagar.class)
                 .setParameter("id", idFornecedor)
                 .getResultList();
     }
