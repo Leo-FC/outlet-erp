@@ -31,6 +31,7 @@ public class ProdutoDAO implements Serializable {
         }
     }
     
+    /*
     public void excluir(Produto produto) {
         try {
         	em.getTransaction().begin();
@@ -40,6 +41,22 @@ public class ProdutoDAO implements Serializable {
         	em.remove(produto);
         	em.getTransaction().commit();
         } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
+        }
+    }
+    */
+    
+    public void excluir(Produto produto) {
+    	try {
+    		em.getTransaction().begin();
+    		Produto p = em.find(Produto.class, produto.getIdProduto());
+    		if(p != null) {
+    			p.setAtivo(false); // <- A CORREÇÃO (Exclusão Lógica)
+    			em.merge(p);
+    		}
+    		em.getTransaction().commit();
+    	} catch (Exception e) {
             if (em.getTransaction().isActive()) em.getTransaction().rollback();
             throw e;
         }
@@ -62,7 +79,7 @@ public class ProdutoDAO implements Serializable {
     }
     
     public List<Produto> listarProdutos() {
-        return em.createQuery("SELECT p FROM Produto p", Produto.class).getResultList();
+        return em.createQuery("SELECT p FROM Produto p WHERE p.ativo = true", Produto.class).getResultList();
     }
     
     public List<Marca> listarMarcas() {
@@ -82,7 +99,7 @@ public class ProdutoDAO implements Serializable {
     }
     
     public List<Produto> buscarProdutosComEstoque() {
-    	String jpql = "SELECT p FROM Produto p JOIN p.estoque e WHERE e.quantidade > 0";
+    	String jpql = "SELECT p FROM Produto p JOIN p.estoque e WHERE e.quantidade > 0 AND p.ativo = true";
         return em.createQuery(jpql, Produto.class).getResultList();
     }
 }
