@@ -13,7 +13,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.annotation.PostConstruct;
-
+import javax.transaction.Transactional; // Import Transactional
 
 @Named
 @ViewScoped // Use este escopo para o popup
@@ -27,115 +27,185 @@ public class EstoqueBean implements Serializable {
     @Inject
     private EstoqueDAO estoqueDAO;
 
-    private List<Produto> todosProdutos;
-    private List<Estoque> listaEstoque;
+    private List<Produto> todosProdutos; // Para o <p:selectOneMenu>
+    private List<Estoque> listaEstoque; // Para a tabela
 
-    private Produto produtoSelecionado;
-    private Integer quantidade;
-    private Integer quantidadeMinima;
-    private Integer quantidadeMaxima;
-    
-    // Altere para usar uma única entidade Estoque
+    private Produto produtoSelecionado; // Para o formulário de cadastro
+    private Integer quantidade; // Para o formulário de cadastro
+    private Integer quantidadeMinima; // Para o formulário de cadastro
+    private Integer quantidadeMaxima; // Para o formulário de cadastro
+
+    // Para o diálogo de edição
     private Estoque estoque = new Estoque();
+    // Para o diálogo de exclusão
     private Estoque estoqueParaExcluir;
-    
+
     @PostConstruct
     public void init() {
-        carregarProdutos();
-        carregarEstoque();
+        carregarProdutosParaSelecao(); // Carrega produtos para o <p:selectOneMenu>
+        carregarEstoque(); // Carrega a lista para a tabela
     }
 
-    public void carregarProdutos() {
+    // Carrega produtos que podem receber um novo registro de estoque
+    public void carregarProdutosParaSelecao() {
+        // Regra de negócio: Listar apenas produtos ativos que *ainda não* possuem estoque?
+        // Ou listar todos os ativos? Ajuste a query no DAO conforme necessário.
+        // Por hora, listamos todos os produtos ativos (simplificado).
         todosProdutos = produtoDAO.listarProdutos();
+        // Se quiser filtrar os que já tem estoque, precisaria de um método específico no ProdutoDAO
+        // ou filtrar aqui na lista carregada (menos eficiente se a lista for grande).
     }
 
     public void carregarEstoque() {
         listaEstoque = estoqueDAO.buscarTodos();
     }
 
-    public void salvarEstoque() {
+    /**
+     * Salva as alterações de um registro de estoque existente (via diálogo de edição).
+     * Chama EstoqueDAO.atualizar() que já possui auditoria.
+     */
+    public void salvarEstoque() { // Este método é para EDIÇÃO
+        FacesContext context = FacesContext.getCurrentInstance();
         try {
-            if (estoque.getIdEstoque() == null) {
-                // Se o ID for nulo, é um novo registro
-                estoqueDAO.salvar(estoque);
-            } else {
+            if (estoque != null && estoque.getIdEstoque() != null) {
                 // Se o ID existir, é uma atualização
-                estoqueDAO.atualizar(estoque);
+                estoqueDAO.atualizar(estoque); // O DAO.atualizar() já audita
+                this.estoque = new Estoque(); // Limpa o objeto de edição
+                carregarEstoque(); // Atualiza a lista da tabela
+                context.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Estoque do produto atualizado com sucesso!"));
+                // Fecha o diálogo via oncomplete no botão da tela
+            } else {
+                 context.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso", "Nenhum estoque selecionado para edição."));
             }
-            
-            this.estoque = new Estoque(); // Limpa o objeto após salvar
-            carregarEstoque(); // Atualiza a lista da tabela
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Estoque do produto salvo com sucesso!"));
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao salvar estoque: " + e.getMessage()));
+             System.err.println("Erro detalhado ao atualizar estoque: " + e.getMessage());
+             e.printStackTrace();
+            context.addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao atualizar estoque: Verifique o console."));
+            // Não fecha o diálogo em caso de erro
+             // Adiciona script para indicar falha ao oncomplete do JSF, se necessário
+             // PrimeFaces.current().ajax().addCallbackParam("validationFailed", true);
         }
     }
-    
-    public void salvarNovoEstoquePorAtributos() {
-        try {
-            // 1. Crie o objeto Estoque com os dados do formulário
-            Estoque novoEstoque = new Estoque();
-            novoEstoque.setQuantidade(quantidade);
-            novoEstoque.setQuantidadeMinima(quantidadeMinima);
-            novoEstoque.setQuantidadeMaxima(quantidadeMaxima);
-            
-            // 2. Associe o novo estoque ao produto selecionado
-            // A associação bidirecional é crucial!
-            novoEstoque.setProduto(produtoSelecionado);
-            produtoSelecionado.setEstoque(novoEstoque);
 
-            // 3. Salve/atualize o Produto. O Hibernate irá salvar o Estoque em cascata.
-            // Chame o método de atualizar/merge do ProdutoDAO
-            produtoDAO.atualizar(produtoSelecionado);
+    /**
+     * Salva um NOVO registro de estoque para um produto selecionado (via tela de cadastro).
+     * Chama EstoqueDAO.salvar() explicitamente para garantir a auditoria.
+     */
+    @Transactional // Garante atomicidade: ou salva estoque E atualiza produto, ou nenhum
+    public void salvarNovoEstoquePorAtributos() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            // Validação 0: Campos obrigatórios (já feitos pelo JSF com required="true")
+
+            // Validação 1: Produto selecionado
+            if (produtoSelecionado == null) {
+                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Selecione um produto."));
+                 return;
+            }
+
+            // Validação 2: Verifica se o produto selecionado já possui estoque
+             Estoque estoqueExistente = estoqueDAO.buscarPorProduto(produtoSelecionado.getIdProduto());
+             if (estoqueExistente != null) {
+                 context.addMessage(null,
+                     new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso", "Este produto já possui um registro de estoque. Use a tela de visualização/edição para alterá-lo."));
+                 return; // Impede a criação duplicada
+             }
+
+            // 1. Cria o objeto Estoque com os dados do formulário
+            Estoque novoEstoque = new Estoque();
+            novoEstoque.setQuantidade(quantidade != null ? quantidade : 0); // Define 0 se for nulo
+            novoEstoque.setQuantidadeMinima(quantidadeMinima != null ? quantidadeMinima : 0); // Define 0 se for nulo
+            novoEstoque.setQuantidadeMaxima(quantidadeMaxima != null ? quantidadeMaxima : Integer.MAX_VALUE); // Define um valor alto se for nulo
+            novoEstoque.setProduto(produtoSelecionado); // Associa o produto ao estoque
+
+            // 2. Salva o Estoque usando o DAO (isso vai gerar o ID e registrar a auditoria)
+            estoqueDAO.salvar(novoEstoque); // CHAMADA EXPLÍCITA AO DAO QUE AUDITA
+
+            // 3. Atualiza a referência bidirecional no objeto Produto
+            // Busca a instância gerenciada do produto para evitar problemas
+             Produto produtoParaAtualizar = produtoDAO.buscarPorId(produtoSelecionado.getIdProduto());
+             if (produtoParaAtualizar != null) {
+                 produtoParaAtualizar.setEstoque(novoEstoque); // Associa o estoque recém-salvo (agora com ID)
+                 produtoDAO.atualizar(produtoParaAtualizar); // Atualiza o produto (sem auditoria aqui, pois a mudança foi no estoque)
+             } else {
+                 // Situação inesperada: o produto selecionado não foi encontrado no banco
+                 throw new IllegalStateException("Produto selecionado (ID: " + produtoSelecionado.getIdProduto() + ") não encontrado para atualizar a referência de estoque.");
+             }
+
 
             // Limpa os campos do formulário
             this.produtoSelecionado = null;
             this.quantidade = null;
             this.quantidadeMinima = null;
             this.quantidadeMaxima = null;
-            
-            carregarEstoque();
-            FacesContext.getCurrentInstance().addMessage(null,
+
+            carregarEstoque(); // Atualiza a lista da tabela de visualização
+            carregarProdutosParaSelecao(); // Recarrega a lista de produtos (pode remover o que acabou de ganhar estoque, dependendo da regra)
+
+            context.addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Estoque do produto salvo com sucesso!"));
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao salvar estoque: " + e.getMessage()));
+             System.err.println("Erro detalhado ao salvar novo estoque por atributos: " + e.getMessage());
+             e.printStackTrace(); // Log completo no servidor
+            context.addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro Inesperado", "Ocorreu um erro ao salvar o estoque. Consulte o log do servidor."));
+            // Não limpa os campos em caso de erro para o usuário poder corrigir
         }
     }
-    
-    // Método para preparar a exclusão
+
+    // Método para preparar a exclusão (chamado pelo botão na tabela)
     public void prepararExclusao(Estoque estoque) {
         this.estoqueParaExcluir = estoque;
     }
 
-    // Método para confirmar e excluir o estoque
+    // Método para confirmar e excluir o estoque (chamado pelo diálogo de confirmação)
+    @Transactional // Garante que a remoção e a auditoria ocorram juntas ou nenhuma
     public void confirmarExclusao() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (estoqueParaExcluir == null || estoqueParaExcluir.getIdEstoque() == null) {
+             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso", "Nenhum estoque selecionado para exclusão."));
+             return;
+        }
         try {
+            // O EstoqueDAO.remover() já faz a auditoria ANTES de remover
             estoqueDAO.remover(estoqueParaExcluir.getIdEstoque());
-            carregarEstoque();
-            FacesContext.getCurrentInstance().addMessage(null,
+            carregarEstoque(); // Atualiza a lista da tabela
+            carregarProdutosParaSelecao(); // Recarrega a lista de produtos
+            context.addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Estoque excluído com sucesso!"));
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao excluir estoque: " + e.getMessage()));
+             System.err.println("Erro detalhado ao excluir estoque: " + e.getMessage());
+             e.printStackTrace();
+            context.addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao excluir estoque: Consulte o log."));
+        } finally {
+             // Limpa a referência independentemente do resultado
+            this.estoqueParaExcluir = null;
         }
-        // Limpa a referência
-        this.estoqueParaExcluir = null;
     }
 
-    // Método para preparar a edição, usado pelo botão na tabela
+    // Método para preparar a edição (usado pelo botão na tabela)
+    // Usamos f:setPropertyActionListener na tela para setar estoqueBean.estoque diretamente
+    // Mas podemos ter um método se precisarmos carregar algo mais
     public void prepararEdicao(Estoque estoqueSelecionado) {
-        this.estoque = estoqueSelecionado;
+        // Se precisar buscar dados adicionais relacionados ao estoque, faça aqui
+        // Por exemplo, recarregar o produto associado com todas as coleções, se necessário
+        // this.estoque = estoqueDAO.buscarComDetalhes(estoqueSelecionado.getIdEstoque());
+        this.estoque = estoqueSelecionado; // Simplesmente define o estoque para o diálogo de edição
     }
-    
-    // Método para preparar um novo cadastro
+
+    // Método para preparar um novo cadastro (pode ser usado por um botão "Novo")
+    // O cadastro principal é feito pela tela cadastroEstoque.xhtml, não por diálogo aqui.
     public void novoCadastro() {
         this.estoque = new Estoque();
+        // Redireciona ou limpa campos se necessário
     }
 
-    // Getters e Setters
+    // --- Getters e Setters ---
+
     public Estoque getEstoque() {
         return estoque;
     }
@@ -153,6 +223,10 @@ public class EstoqueBean implements Serializable {
     }
 
     public List<Estoque> getListaEstoque() {
+        // Garante que a lista seja carregada se estiver nula
+        if (listaEstoque == null) {
+            carregarEstoque();
+        }
         return listaEstoque;
     }
 

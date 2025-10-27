@@ -114,6 +114,9 @@ public class Produto implements Serializable { // Mantive a implementação de S
         return ativo;
     }
 
+	public Boolean isAtivo() {
+		return ativo;
+	}
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
     }
