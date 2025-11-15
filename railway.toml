@@ -3,3 +3,6 @@ builder = "NIXPACKS"
 
 [nixpacks.phases.build]
 cmds = ["mvn clean install -DskipTests"]
+
+[nixpacks.start]
+cmd = "java -jar target/dependency/webapp-runner.jar --port $PORT target/*.war"
