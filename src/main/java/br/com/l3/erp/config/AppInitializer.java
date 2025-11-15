@@ -16,28 +16,68 @@ public class AppInitializer implements ServletContextListener {
             String dbHost = System.getenv("MYSQLHOST");
             String dbPort = System.getenv("MYSQLPORT");
             String dbName = System.getenv("MYSQLDATABASE");
-            String dbUser = System.getenv("MYSQLUSER"); // Note: usando MYSQLUSER, não root
-            String dbPass = System.getenv("MYSQLPASSWORD"); // Note: usando MYSQLPASSWORD
+            String dbUser = System.getenv("MYSQLUSER");
+            String dbPass = System.getenv("MYSQLPASSWORD");
 
-            // Monta a URL do banco
-            String dbUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?useSSL=false&serverTimezone=America/Sao_Paulo";
-            
+            if (dbHost != null && dbPort != null && dbName != null) {
+                String dbUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?useSSL=false&serverTimezone=America/Sao_Paulo";
+                System.setProperty("db.url", dbUrl);
+                System.out.println("DB URL definida.");
+            } else {
+                System.err.println("ERRO: Variáveis do banco de dados (HOST, PORT, NAME) não encontradas!");
+            }
+
+            if (dbUser != null) {
+                System.setProperty("db.username", dbUser);
+            } else {
+                System.err.println("ERRO: Variável DB_USERNAME não encontrada!");
+            }
+
+            if (dbPass != null) {
+                System.setProperty("db.password", dbPass);
+            } else {
+                System.err.println("ERRO: Variável DB_PASSWORD não encontrada!");
+            }
+
             System.setProperty("db.driver", "com.mysql.cj.jdbc.Driver");
-            System.setProperty("db.url", dbUrl);
-            System.setProperty("db.username", dbUser);
-            System.setProperty("db.password", dbPass);
+
 
             // --- Propriedades do Email (Lendo do Ambiente) ---
-            System.setProperty("mailtrap.host", System.getenv("MAILTRAP_HOST"));
-            System.setProperty("mailtrap.port", System.getenv("MAILTRAP_PORT"));
-            System.setProperty("mailtrap.username", System.getenv("MAILTRAP_USERNAME"));
-            System.setProperty("mailtrap.password", System.getenv("MAILTRAP_PASSWORD"));
+            String mailHost = System.getenv("MAILTRAP_HOST");
+            String mailPort = System.getenv("MAILTRAP_PORT");
+            String mailUser = System.getenv("MAILTRAP_USERNAME");
+            String mailPass = System.getenv("MAILTRAP_PASSWORD");
+
+            if (mailHost != null) {
+                System.setProperty("mailtrap.host", mailHost);
+            } else {
+                System.err.println("AVISO: Variável MAILTRAP_HOST não encontrada.");
+            }
+
+            if (mailPort != null) {
+                System.setProperty("mailtrap.port", mailPort);
+            } else {
+                System.err.println("AVISO: Variável MAILTRAP_PORT não encontrada.");
+            }
+
+            if (mailUser != null) {
+                System.setProperty("mailtrap.username", mailUser);
+            } else {
+                System.err.println("AVISO: Variável MAILTRAP_USERNAME não encontrada.");
+            }
+
+            if (mailPass != null) {
+                System.setProperty("mailtrap.password", mailPass);
+            } else {
+                System.err.println("AVISO: Variável MAILTRAP_PASSWORD não encontrada.");
+            }
 
             System.out.println("Propriedades carregadas via variáveis de ambiente!");
             
         } catch (Exception ex) {
-            System.err.println("ERRO: Não foi possível carregar as variáveis de ambiente: " + ex.getMessage());
-            throw new RuntimeException("Falha ao inicializar a aplicação. Variáveis de ambiente não configuradas.", ex);
+            System.err.println("ERRO INESPERADO no AppInitializer: " + ex.getMessage());
+            ex.printStackTrace(); // Loga o erro completo
+            throw new RuntimeException("Falha crítica ao inicializar a aplicação.", ex);
         }
     }
 }
