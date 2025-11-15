@@ -1,8 +1,5 @@
 package br.com.l3.erp.config;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -10,30 +7,37 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class AppInitializer implements ServletContextListener {
 
-    @Override
+	@Override
     public void contextInitialized(ServletContextEvent sce) {
-        System.out.println("Iniciando a aplicação web. Carregando propriedades...");
+        System.out.println("Iniciando a aplicação web. Carregando variáveis de ambiente do Railway...");
 
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
-            if (input == null) {
-                throw new RuntimeException("Arquivo database.properties não encontrado no classpath!");
-            }
+        try {
+            // --- Propriedades do Banco de Dados (Lendo do Railway) ---
+            String dbHost = System.getenv("MYSQLHOST");
+            String dbPort = System.getenv("MYSQLPORT");
+            String dbName = System.getenv("MYSQLDATABASE");
+            String dbUser = System.getenv("MYSQLUSER"); // Note: usando MYSQLUSER, não root
+            String dbPass = System.getenv("MYSQLPASSWORD"); // Note: usando MYSQLPASSWORD
 
-            Properties prop = new Properties();
-            prop.load(input);
+            // Monta a URL do banco
+            String dbUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?useSSL=false&serverTimezone=America/Sao_Paulo";
+            
+            System.setProperty("db.driver", "com.mysql.cj.jdbc.Driver");
+            System.setProperty("db.url", dbUrl);
+            System.setProperty("db.username", dbUser);
+            System.setProperty("db.password", dbPass);
 
-            // Define as propriedades do sistema para que o Hibernate as encontre
-            prop.forEach((key, value) -> System.setProperty(key.toString(), value.toString()));
+            // --- Propriedades do Email (Lendo do Ambiente) ---
+            System.setProperty("mailtrap.host", System.getenv("MAILTRAP_HOST"));
+            System.setProperty("mailtrap.port", System.getenv("MAILTRAP_PORT"));
+            System.setProperty("mailtrap.username", System.getenv("MAILTRAP_USERNAME"));
+            System.setProperty("mailtrap.password", System.getenv("MAILTRAP_PASSWORD"));
 
-            System.out.println("Propriedades do banco de dados carregadas com sucesso!");
-        } catch (IOException ex) {
-            System.err.println("ERRO: Não foi possível carregar o arquivo de propriedades: " + ex.getMessage());
-            throw new RuntimeException("Falha ao inicializar a aplicação. O arquivo de propriedades não foi carregado.", ex);
+            System.out.println("Propriedades carregadas via variáveis de ambiente!");
+            
+        } catch (Exception ex) {
+            System.err.println("ERRO: Não foi possível carregar as variáveis de ambiente: " + ex.getMessage());
+            throw new RuntimeException("Falha ao inicializar a aplicação. Variáveis de ambiente não configuradas.", ex);
         }
-    }
-
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-        System.out.println("Aplicação web sendo encerrada...");
     }
 }
