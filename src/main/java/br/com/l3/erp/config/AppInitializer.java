@@ -1,5 +1,7 @@
 package br.com.l3.erp.config;
 
+import java.io.InputStream;
+import java.util.Properties;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -9,75 +11,68 @@ public class AppInitializer implements ServletContextListener {
 
 	@Override
     public void contextInitialized(ServletContextEvent sce) {
-        System.out.println("Iniciando a aplicação web. Carregando variáveis de ambiente do Railway...");
+        System.out.println("Iniciando a aplicação web. Verificando ambiente...");
 
         try {
-            // --- Propriedades do Banco de Dados (Lendo do Railway) ---
+            // Tenta ler a variável de ambiente do Railway
             String dbHost = System.getenv("MYSQLHOST");
-            String dbPort = System.getenv("MYSQLPORT");
-            String dbName = System.getenv("MYSQLDATABASE");
-            String dbUser = System.getenv("MYSQLUSER");
-            String dbPass = System.getenv("MYSQLPASSWORD");
-
-            if (dbHost != null && dbPort != null && dbName != null) {
-                String dbUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?useSSL=false&serverTimezone=America/Sao_Paulo";
-                System.setProperty("db.url", dbUrl);
-                System.out.println("DB URL definida.");
-            } else {
-                System.err.println("ERRO: Variáveis do banco de dados (HOST, PORT, NAME) não encontradas!");
-            }
-
-            if (dbUser != null) {
-                System.setProperty("db.username", dbUser);
-            } else {
-                System.err.println("ERRO: Variável DB_USERNAME não encontrada!");
-            }
-
-            if (dbPass != null) {
-                System.setProperty("db.password", dbPass);
-            } else {
-                System.err.println("ERRO: Variável DB_PASSWORD não encontrada!");
-            }
-
-            System.setProperty("db.driver", "com.mysql.cj.jdbc.Driver");
-
-
-            // --- Propriedades do Email (Lendo do Ambiente) ---
             String mailHost = System.getenv("MAILTRAP_HOST");
-            String mailPort = System.getenv("MAILTRAP_PORT");
-            String mailUser = System.getenv("MAILTRAP_USERNAME");
-            String mailPass = System.getenv("MAILTRAP_PASSWORD");
 
-            if (mailHost != null) {
+            if (dbHost == null || dbHost.isEmpty()) {
+                System.out.println("Modo LOCAL detectado. Carregando config.properties...");
+                
+                try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+                    if (input == null) {
+                        throw new RuntimeException("Arquivo config.properties não encontrado no classpath!");
+                    }
+                    Properties prop = new Properties();
+                    prop.load(input);
+
+                    // Define as propriedades do sistema a partir do ARQUIVO
+                    System.setProperty("db.driver", prop.getProperty("db.driver"));
+                    System.setProperty("db.url", prop.getProperty("db.url"));
+                    System.setProperty("db.username", prop.getProperty("db.username"));
+                    System.setProperty("db.password", prop.getProperty("db.password"));
+
+                    System.setProperty("mailtrap.host", prop.getProperty("mailtrap.host"));
+                    System.setProperty("mailtrap.port", prop.getProperty("mailtrap.port"));
+                    System.setProperty("mailtrap.username", prop.getProperty("mailtrap.username"));
+                    System.setProperty("mailtrap.password", prop.getProperty("mailtrap.password"));
+                    
+                    System.out.println("Propriedades locais carregadas com sucesso!");
+                }
+
+            // SE ENCONTRAR (estamos no Railway)
+            } else {
+                System.out.println("Modo NUVEM (Railway) detectado. Carregando variáveis de ambiente...");
+
+                // --- Propriedades do Banco de Dados (Lendo do Railway) ---
+                String dbPort = System.getenv("MYSQLPORT");
+                String dbName = System.getenv("MYSQLDATABASE");
+                String dbUser = System.getenv("MYSQLUSER");
+                String dbPass = System.getenv("MYSQLPASSWORD");
+
+                // Monta a URL do banco
+                String dbUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?useSSL=false&serverTimezone=America/Sao_Paulo";
+                
+                System.setProperty("db.driver", "com.mysql.cj.jdbc.Driver");
+                System.setProperty("db.url", dbUrl);
+                System.setProperty("db.username", dbUser);
+                System.setProperty("db.password", dbPass);
+
+                // --- Propriedades do Email (Lendo do Ambiente) ---
                 System.setProperty("mailtrap.host", mailHost);
-            } else {
-                System.err.println("AVISO: Variável MAILTRAP_HOST não encontrada.");
-            }
+                System.setProperty("mailtrap.port", System.getenv("MAILTRAP_PORT"));
+                System.setProperty("mailtrap.username", System.getenv("MAILTRAP_USERNAME"));
+                System.setProperty("mailtrap.password", System.getenv("MAILTRAP_PASSWORD"));
 
-            if (mailPort != null) {
-                System.setProperty("mailtrap.port", mailPort);
-            } else {
-                System.err.println("AVISO: Variável MAILTRAP_PORT não encontrada.");
+                System.out.println("Propriedades da nuvem carregadas com sucesso!");
             }
-
-            if (mailUser != null) {
-                System.setProperty("mailtrap.username", mailUser);
-            } else {
-                System.err.println("AVISO: Variável MAILTRAP_USERNAME não encontrada.");
-            }
-
-            if (mailPass != null) {
-                System.setProperty("mailtrap.password", mailPass);
-            } else {
-                System.err.println("AVISO: Variável MAILTRAP_PASSWORD não encontrada.");
-            }
-
-            System.out.println("Propriedades carregadas via variáveis de ambiente!");
             
         } catch (Exception ex) {
-            System.err.println("ERRO INESPERADO no AppInitializer: " + ex.getMessage());
-            ex.printStackTrace(); // Loga o erro completo
-            throw new RuntimeException("Falha crítica ao inicializar a aplicação.", ex);
+            System.err.println("ERRO CRÍTICO: Não foi possível carregar as configurações: " + ex.getMessage());
+            ex.printStackTrace();
+            throw new RuntimeException("Falha ao inicializar a aplicação.", ex);
         }
     }
 }
