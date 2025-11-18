@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.l3.erp.model.dao.fornecedor.FornecedorDAO;
@@ -28,7 +29,8 @@ public class FornecedorBean implements Serializable {
     private String filtroCNPJ;
     private Boolean filtroAtivo;
     
-    private FornecedorDAO fornecedorDAO = new FornecedorDAO();
+    @Inject
+    private FornecedorDAO fornecedorDAO;
     
     private Fornecedor fornecedorParaExcluir;
     private Long fornecedorIdParaEdicao;

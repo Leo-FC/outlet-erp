@@ -53,9 +53,10 @@
 				                 styleClass="p-button-raised p-button-rounded p-button-info" 
 				                 style="width: 100%; margin-bottom: 10px;"/>
 
-                <p:button value="Sair" icon="pi pi-sign-out"
-                          styleClass="ui-button-secondary" outcome="/login.xhtml" 
-                          style="width: 100%; margin-top: 20px;"/>
+				<p:commandButton value="Sair" icon="pi pi-sign-out"
+				                 action="#{loginBean.logout}"
+				                 ajax="false" styleClass="ui-button-secondary"
+				                 style="width: 100%; margin-top: 20px;"/>
             </h:form>
         </nav>
 

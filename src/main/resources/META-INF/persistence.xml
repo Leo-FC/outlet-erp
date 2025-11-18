@@ -17,6 +17,7 @@
         <class>br.com.l3.erp.model.entity.venda.Venda</class>
         <class>br.com.l3.erp.model.entity.venda.ItemVenda</class>
         
+        <class>br.com.l3.erp.model.entity.auditoria.AuditoriaLog</class>
         
 
         <properties>

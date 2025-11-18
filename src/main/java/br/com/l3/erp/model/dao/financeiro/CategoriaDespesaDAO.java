@@ -1,35 +1,51 @@
 package br.com.l3.erp.model.dao.financeiro;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-
 import br.com.l3.erp.model.entity.financeiro.CategoriaDespesa;
-
 import java.util.List;
 
+@ApplicationScoped
 public class CategoriaDespesaDAO {
 
-	private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("erpPU");
+    @Inject
+    private EntityManager em;
 
-    @PersistenceContext
-    private EntityManager em = emf.createEntityManager();
-
-    @Transactional
     public void salvar(CategoriaDespesa categoria) {
-        em.persist(categoria);
+        try {
+            em.getTransaction().begin();
+            em.persist(categoria);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
+        }
     }
 
-    @Transactional
     public void atualizar(CategoriaDespesa categoria) {
-        em.merge(categoria);
+        try {
+            em.getTransaction().begin();
+            em.merge(categoria);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
+        }
     }
 
-    @Transactional
     public void remover(CategoriaDespesa categoria) {
-        em.remove(em.contains(categoria) ? categoria : em.merge(categoria));
+        try {
+            em.getTransaction().begin();
+            if (!em.contains(categoria)) {
+                categoria = em.merge(categoria);
+            }
+            em.remove(categoria);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
+        }
     }
 
     public CategoriaDespesa buscarPorId(Long id) {
@@ -42,7 +58,7 @@ public class CategoriaDespesaDAO {
     }
 
     public List<CategoriaDespesa> buscarPorNome(String nome) {
-        return em.createQuery("SELECT c FROM CategoriaDespesa c WHERE c.nome_categoria LIKE :nome", CategoriaDespesa.class)
+        return em.createQuery("SELECT c FROM CategoriaDespesa c WHERE c.nomeCategoria LIKE :nome", CategoriaDespesa.class)
                  .setParameter("nome", "%" + nome + "%")
                  .getResultList();
     }

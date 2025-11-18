@@ -1,7 +1,5 @@
 package br.com.l3.erp.service;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Properties;
 
@@ -26,15 +24,15 @@ public class EmailService implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private final Properties emailProps = new Properties();
 
-    public EmailService() {
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
-            if (input == null) {
-                System.out.println("Arquivo 'config.properties' não encontrado.");
-                return;
-            }
-            emailProps.load(input);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+	public EmailService() {
+        // Lê as propriedades definidas pelo AppInitializer
+        emailProps.setProperty("mailtrap.host", System.getProperty("mailtrap.host"));
+        emailProps.setProperty("mailtrap.port", System.getProperty("mailtrap.port"));
+        emailProps.setProperty("mailtrap.username", System.getProperty("mailtrap.username"));
+        emailProps.setProperty("mailtrap.password", System.getProperty("mailtrap.password"));
+
+        if (emailProps.getProperty("mailtrap.host") == null) {
+            System.err.println("AVISO: Propriedades do Mailtrap não carregadas no EmailService.");
         }
     }
 

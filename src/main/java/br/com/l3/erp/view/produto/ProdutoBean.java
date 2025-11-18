@@ -30,7 +30,8 @@ public class ProdutoBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-    private ProdutoDAO produtoDAO = new ProdutoDAO();
+	@Inject
+    private ProdutoDAO produtoDAO;
 
     @Inject
     private CategoriaDAO categoriaDAO;

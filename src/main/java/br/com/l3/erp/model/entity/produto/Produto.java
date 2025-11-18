@@ -50,6 +50,9 @@ public class Produto implements Serializable { // Mantive a implementação de S
     @Column(name = "preco", nullable = false, precision = 10, scale = 2)
     private BigDecimal preco;
 
+    @Column(nullable = false)
+    private Boolean ativo = true;
+    
     @OneToOne(mappedBy = "produto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Estoque estoque;
     // Construtor
@@ -107,7 +110,16 @@ public class Produto implements Serializable { // Mantive a implementação de S
 		this.preco = preco;
 	}
 	
-	
+	public Boolean getAtivo() {
+        return ativo;
+    }
+
+	public Boolean isAtivo() {
+		return ativo;
+	}
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
 
 	public Estoque getEstoque() {
 		return estoque;
