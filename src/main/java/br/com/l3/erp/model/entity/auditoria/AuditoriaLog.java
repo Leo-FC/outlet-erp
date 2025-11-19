@@ -30,7 +30,7 @@ public class AuditoriaLog implements Serializable {
     private String nomeUsuario; // Campo renomeado
 
     // --- QUANDO ---
-    @Column(nullable = false)
+    @Column(name = "timestamp", nullable = false)
     private LocalDateTime timestamp;
 
     // --- ONDE ---

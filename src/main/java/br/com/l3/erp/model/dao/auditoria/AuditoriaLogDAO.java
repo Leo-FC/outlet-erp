@@ -1,9 +1,14 @@
 package br.com.l3.erp.model.dao.auditoria;
 
-import br.com.l3.erp.model.entity.auditoria.AuditoriaLog;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.Column;
 import javax.persistence.EntityManager;
+
+import br.com.l3.erp.model.entity.auditoria.AuditoriaLog;
 
 @ApplicationScoped
 public class AuditoriaLogDAO {
@@ -11,6 +16,9 @@ public class AuditoriaLogDAO {
     @Inject
     private EntityManager em; // Mantém a injeção do EM gerenciado pelo CDI/JPAProducer
 
+    @Column(name = "timestamp_acao", nullable = false) // Mapeia para a coluna correta e segura
+    private LocalDateTime timestamp;
+    
     /**
      * Persiste um log de auditoria dentro de uma transação ativa existente.
      * A transação DEVE ser gerenciada externamente (pelo AuditoriaService).
@@ -35,5 +43,11 @@ public class AuditoriaLogDAO {
             e.printStackTrace(); // É importante ver a causa raiz
             throw e; // Relança a exceção para que o AuditoriaService possa fazer rollback
         }
+    }
+    
+    public List<AuditoriaLog> listarTodos() {
+        // Retorna logs ordenados por data (mais recente primeiro)
+        return em.createQuery("SELECT a FROM AuditoriaLog a ORDER BY a.timestamp DESC", AuditoriaLog.class)
+                 .getResultList();
     }
 }

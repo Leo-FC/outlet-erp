@@ -9,6 +9,7 @@
     --cor-fornecedores: #fd7e14;
     --cor-estoque: #ff9c0a;
     --cor-vendas: #28a745;
+    --cor-auditoria: #607D8B;
 }
 
 .module-header {
@@ -53,4 +54,9 @@
 .module-header.vendas {
     color: var(--cor-vendas);
     border-bottom-color: var(--cor-vendas);
+}
+
+.module-header.auditoria {
+	color: var(--cor-auditoria);
+	border-bottom-color: var(--cor-auditoria);
 }

@@ -47,8 +47,14 @@
 				                 styleClass="p-button-raised p-button-rounded p-button-info" 
 				                 style="width: 100%; margin-bottom: 10px;"/>
 				                 
-                <p:commandButton value="Vendas" icon="pi pi-shopping-cart"
+				<p:commandButton value="Vendas" icon="pi pi-shopping-cart"
 				                 actionListener="#{painelAdminBean.navegarPara('/admin/venda/gerenciarVenda.xhtml')}"
+				                 update=":formPainel:dashboardContent"
+				                 styleClass="p-button-raised p-button-rounded p-button-info" 
+				                 style="width: 100%; margin-bottom: 10px;"/>
+				                 
+				<p:commandButton value="Auditoria" icon="pi pi-shield"
+				                 actionListener="#{painelAdminBean.navegarPara('/admin/auditoria/listarAuditoria.xhtml')}"
 				                 update=":formPainel:dashboardContent"
 				                 styleClass="p-button-raised p-button-rounded p-button-info" 
 				                 style="width: 100%; margin-bottom: 10px;"/>
