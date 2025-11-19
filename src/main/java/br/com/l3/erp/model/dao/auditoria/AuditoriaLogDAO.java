@@ -50,4 +50,13 @@ public class AuditoriaLogDAO {
         return em.createQuery("SELECT a FROM AuditoriaLog a ORDER BY a.timestamp DESC", AuditoriaLog.class)
                  .getResultList();
     }
+    
+    public List<AuditoriaLog> buscarPorIntervalo(LocalDateTime inicio, LocalDateTime fim) {
+        String jpql = "SELECT a FROM AuditoriaLog a WHERE a.timestamp BETWEEN :inicio AND :fim ORDER BY a.timestamp ASC";
+        
+        return em.createQuery(jpql, AuditoriaLog.class)
+                 .setParameter("inicio", inicio)
+                 .setParameter("fim", fim)
+                 .getResultList();
+    }
 }

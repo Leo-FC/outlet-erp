@@ -1,41 +1,153 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-<h:head>
-    <title>Gerar PDF Auditoria</title>
-    <h:outputStylesheet name="css/style.css" />
-    <h:outputStylesheet name="css/panel.css" />
-    <style>
-        .pdf-container {
-            width: 100%;
-            max-width: 500px;
-            margin: 50px auto;
-            text-align: center;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-    </style>
-</h:head>
-<h:body>
-    <h:form>
-        <div class="pdf-container">
-            <h2>Relatório de Auditoria</h2>
-            <p>Clique no botão abaixo para gerar o relatório completo de auditoria em PDF.</p>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+        <title>Gerar PDF Auditoria</title>
+        <h:outputStylesheet name="css/style.css" />
+        <h:outputStylesheet name="css/panel.css" />
+        
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap');
+
+            body {
+                background-color: #f4f6f8;
+                font-family: 'Poppins', sans-serif;
+            }
+
+            .pdf-main-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 80vh; /* Centraliza verticalmente na tela */
+            }
+
+            .pdf-card {
+                width: 100%;
+                max-width: 550px;
+                background-color: #ffffff;
+                border-radius: 12px;
+                padding: 40px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+                text-align: center;
+                border-top: 6px solid #607D8B; /* Cor do Módulo Auditoria */
+            }
+
+            .pdf-title {
+                color: #2C3E50;
+                font-size: 1.8rem;
+                font-weight: 600;
+                margin-bottom: 10px;
+            }
+
+            .pdf-subtitle {
+                color: #7f8c8d;
+                font-size: 0.95rem;
+                margin-bottom: 30px;
+            }
+
+            .form-datas {
+                display: flex;
+                gap: 20px;
+                margin-bottom: 30px;
+                justify-content: space-between;
+            }
+
+            .date-field {
+                display: flex;
+                flex-direction: column;
+                text-align: left;
+                flex: 1;
+            }
+
+            .date-field label {
+                font-weight: 500;
+                color: #34495e;
+                margin-bottom: 8px;
+                font-size: 0.9rem;
+            }
+
+            /* Estilização do Botão Principal para combinar com Auditoria */
+            .btn-gerar-pdf.ui-button {
+                background-color: #607D8B !important;
+                border: 1px solid #607D8B !important;
+                font-weight: 600;
+                width: 100%;
+                height: 50px;
+                font-size: 1.1rem;
+                box-shadow: 0 4px 6px rgba(96, 125, 139, 0.3);
+                transition: all 0.3s ease;
+            }
+
+            .btn-gerar-pdf.ui-button:hover {
+                background-color: #455A64 !important;
+                border-color: #455A64 !important;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 8px rgba(96, 125, 139, 0.4);
+            }
+
+            .btn-voltar.ui-button {
+                margin-top: 15px;
+                width: 100%;
+                background-color: transparent !important;
+                color: #7f8c8d !important;
+                border: 1px solid #bdc3c7 !important;
+            }
             
-            <p:commandButton value="Gerar PDF" icon="pi pi-file-pdf" styleClass="ui-button-info" 
-                             style="margin-top: 20px; width: 200px; height: 50px; font-size: 1.2em;"
-                             ajax="false">
-                <!-- Aqui você adicionará a lógica do p:fileDownload futuramente -->
-            </p:commandButton>
-            
-            <br/><br/>
-            <p:button value="Voltar" outcome="/admin/painelAdmin.xhtml" icon="pi pi-arrow-left" styleClass="ui-button-secondary"/>
+            .btn-voltar.ui-button:hover {
+                background-color: #f4f6f8 !important;
+                color: #2C3E50 !important;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <div class="pdf-main-container">
+            <h:form id="formPDF">
+                <p:growl id="msg" showDetail="true" life="4000"/>
+                
+                <div class="pdf-card">
+                    <div style="margin-bottom: 20px;">
+                        <i class="pi pi-file-pdf" style="font-size: 3rem; color: #607D8B;"></i>
+                    </div>
+
+                    <h:outputText value="Relatório de Auditoria" styleClass="pdf-title" style="display:block"/>
+                    <p class="pdf-subtitle">Defina o período desejado para exportar os logs do sistema.</p>
+                    
+                    <div class="form-datas ui-fluid">
+                        <div class="date-field">
+                            <p:outputLabel for="dtInicio" value="Data Início"/>
+                            <p:datePicker id="dtInicio" value="#{auditoriaBean.dataInicio}" 
+                                          showIcon="true" pattern="dd/MM/yyyy" 
+                                          placeholder="Ex: 01/01/2025" />
+                        </div>
+                        
+                        <div class="date-field">
+                            <p:outputLabel for="dtFim" value="Data Fim"/>
+                            <p:datePicker id="dtFim" value="#{auditoriaBean.dataFim}" 
+                                          showIcon="true" pattern="dd/MM/yyyy"
+                                          placeholder="Ex: 31/01/2025" />
+                        </div>
+                    </div>
+                    
+                    <p:commandButton value="Gerar Relatório PDF" 
+                                   icon="pi pi-download" 
+                                   styleClass="btn-gerar-pdf"
+                                   action="#{auditoriaBean.gerarRelatorioPDF}" 
+                                   update="msg"
+                                   ajax="false">
+                        <p:fileDownload value="#{auditoriaBean.arquivoPDF}" />
+                    </p:commandButton>
+                    
+                    <p:button value="Voltar para Gerenciamento" 
+                              outcome="/admin/painelAdmin.xhtml" 
+                              icon="pi pi-arrow-left" 
+                              styleClass="btn-voltar ui-button-secondary ui-button-flat"/>
+                </div>
+            </h:form>
         </div>
-    </h:form>
-</h:body>
-</html>
+    </h:body>
+
+</ui:composition>
